@@ -2,13 +2,20 @@
     {
         "selector": "node",
         "style": {
-        "label": "data(label)"
+            "label": "data(label)"
         }
     },
     {
         "selector": "edge",
         "style": {
-        "label": "data(label)"
+            "curve-style": "bezier",
+            "label": "data(label)"
+        }
+    },
+    {
+        "selector": "edge[arrow]",
+        "style": {
+            "target-arrow-shape": "data(arrow)"
         }
     }
 ]

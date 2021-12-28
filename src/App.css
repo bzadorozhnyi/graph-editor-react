@@ -8,9 +8,6 @@
 }
 
 .input-graph-data {
-  height: 600px;
-  width: 300px;
-  position: absolute;
+  border: 2px solid blue;
   right: 20px;
-  resize: none;
 }

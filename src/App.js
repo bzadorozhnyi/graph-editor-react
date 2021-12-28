@@ -4,39 +4,58 @@ import React, { useState, useRef } from 'react'
 import CytoscapeComponent from 'react-cytoscapejs';
 import AceEditor from "react-ace";
 
-function updateGraph(userInput) {
-  let elements = [];
+function updateGraph(userInput, oldEdges, direction) {
+  // console.log(oldEdges);
+  let edges = {
+    undirected: [],
+    directed: []
+  };
+
+  if(direction === 'undirected')
+    edges.directed = oldEdges.directed;
+  else
+    edges.undirected = oldEdges.undirected;
+
   userInput.split('\n').forEach(function(row) {
     let items = row.split(' ').filter(item => item.length > 0);
     switch(items.length) {
       case 0:
         break;
       case 1:
-        elements.push({ data: { id: items[0], label: items[0] } });
+        edges[direction].push({ data: { id: items[0], label: items[0] } });
         break;
       case 2:
-        elements.push({ data: { id: items[0], label: items[0] } });
-        elements.push({ data: { id: items[1], label: items[1] } });
-        elements.push({ data: { source: items[0], target: items[1] } });
+        edges[direction].push({ data: { id: items[0], label: items[0] } });
+        edges[direction].push({ data: { id: items[1], label: items[1] } });
+        if(direction === 'undirected')
+          edges[direction].push({ data: { source: items[0], target: items[1] } });
+        else
+          edges[direction].push({ data: { source: items[0], target: items[1], arrow: "triangle" } });
         break;
       case 3:
-        elements.push({ data: { id: items[0], label: items[0] } });
-        elements.push({ data: { id: items[1], label: items[1] } });
-        elements.push({ data: { source: items[0], target: items[1], label: items[2] } });
+        edges[direction].push({ data: { id: items[0], label: items[0] } });
+        edges[direction].push({ data: { id: items[1], label: items[1] } });
+        if(direction === 'undirected')
+          edges[direction].push({ data: { source: items[0], target: items[1], label: items[2] } });
+        else
+          edges[direction].push({ data: { source: items[0], target: items[1], label: items[2], arrow: "triangle" } });
         break;
     }
   });
-  return elements;
+  return edges;
 }
 
 function App() {
   const cyRef = useRef();
-  const [elements, setElements] = useState();
+  const [edges, setEdges] = useState({
+    undirected: [],
+    directed: []
+  });
   return (
     <div className="App">
       <div className="graph-wrapper">
         <CytoscapeComponent
-          elements={elements}
+          edges={edges.undirected.concat(edges.directed)}
           style={{
             backgroundColor: 'green',
             height: '100%',
@@ -45,11 +64,28 @@ function App() {
           stylesheet={stylesheet}
           cy={(cy) => (cyRef.current = cy)}
         />
-        <AceEditor
-          mode="javascript"
-          theme="github"
-          onChange={userInput => setElements(updateGraph(userInput))}
-        />
+        <div>
+          <h3>Undirected edges</h3>
+          <AceEditor
+            className='input-graph-data'
+            mode='javascript'
+            name='undirected'
+            theme='github'
+            height='250px'
+            width='300px'
+            onChange={userInput => setEdges(updateGraph(userInput, edges, 'undirected'))}
+          />
+          <h3>Directed edges</h3>
+          <AceEditor
+            className='input-graph-data'
+            mode='javascript'
+            name='directed'
+            theme='github'
+            height='250px'
+            width='300px'
+            onChange={userInput => setEdges(updateGraph(userInput, edges, 'directed'))}
+          />
+        </div>
       </div>
     </div>
   );
