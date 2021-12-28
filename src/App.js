@@ -38,7 +38,7 @@ function updateGraph(userInput, oldEdges, direction) {
         if(direction === 'undirected')
           edges[direction].push({ data: { source: items[0], target: items[1], label: items[2] } });
         else
-          edges[direction].push({ data: { source: items[0], target: items[1], label: items[2], arrow: "triangle" } });
+          edges[direction].push({ data: { source: items[0], target: items[1], label: items[2], arrow: 'triangle' } });
         break;
     }
   });
@@ -55,7 +55,7 @@ function App() {
     <div className="App">
       <div className="graph-wrapper">
         <CytoscapeComponent
-          edges={edges.undirected.concat(edges.directed)}
+          elements={edges.undirected.concat(edges.directed)}
           style={{
             backgroundColor: 'green',
             height: '100%',
