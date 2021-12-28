@@ -1,0 +1,14 @@
+[
+    {
+        "selector": "node",
+        "style": {
+        "label": "data(label)"
+        }
+    },
+    {
+        "selector": "edge",
+        "style": {
+        "label": "data(label)"
+        }
+    }
+]
