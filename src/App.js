@@ -19,7 +19,9 @@ function App() {
         <CytoscapeComponent
           elements={edges.undirected.concat(edges.directed)}
           style={{
-            backgroundColor: 'green',
+            backgroundColor: 'white',
+            border: '2px solid black',
+            borderRadius: '6px',
             height: '100%',
             width: '600px'
           }}
@@ -32,7 +34,7 @@ function App() {
             className='input-graph-data'
             mode='javascript'
             name='undirected'
-            height='250px'
+            height='235px'
             width='300px'
             onChange={(userInput) => { setEdges(updateGraph(userInput, edges, 'undirected')) }}
           />
@@ -41,14 +43,17 @@ function App() {
             className='input-graph-data'
             mode='javascript'
             name='directed'
-            height='250px'
+            height='235px'
             width='300px'
             onChange={(userInput) => { setEdges(updateGraph(userInput, edges, 'directed')) }}
           />
         </div>
       </div>
-      <button onClick={() => { saveAs(cyRef.current.png(), 'graph.png') }}>Download PNG</button>
-      <button onClick={() => { saveAs(cyRef.current.jpg(), 'graph.jpg') }}>Download JPG</button>
+
+      <div className="download-buttons-wrapper">
+        <button className='download-button' onClick={() => { saveAs(cyRef.current.png(), 'graph.png') }}>Download PNG</button>
+        <button className='download-button' onClick={() => { saveAs(cyRef.current.jpg(), 'graph.jpg') }}>Download JPG</button>
+      </div>
     </div>
   );
 }
