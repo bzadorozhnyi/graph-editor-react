@@ -1,8 +1,10 @@
 import './App.css';
 import stylesheet from './stylesheet.json';
 import React, { useState, useRef } from 'react'
+import cytoscape from 'cytoscape'; 
 import CytoscapeComponent from 'react-cytoscapejs';
-import AceEditor from "react-ace";
+import AceEditor from 'react-ace';
+import { saveAs } from 'file-saver';
 
 function updateGraph(userInput, oldEdges, direction) {
   // console.log(oldEdges);
@@ -46,7 +48,7 @@ function updateGraph(userInput, oldEdges, direction) {
 }
 
 function App() {
-  const cyRef = useRef();
+  const cyRef = useRef(cytoscape({ /* options */ }));
   const [edges, setEdges] = useState({
     undirected: [],
     directed: []
@@ -87,6 +89,7 @@ function App() {
           />
         </div>
       </div>
+      <button onClick={ () => { saveAs(cyRef.current.png(), "graph.png") } }>Download</button>
     </div>
   );
 }

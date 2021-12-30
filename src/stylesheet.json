@@ -2,14 +2,27 @@
     {
         "selector": "node",
         "style": {
-            "label": "data(label)"
+            "label": "data(label)",
+            "text-halign": "center",
+            "text-valign": "center",
+
+            "font-family": ["Lato", "Segoe UI", "Lucida Sans Unicode", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+            "font-size": "18px",
+            "font-weight": "800",
+
+            "height": "48",
+            "width": "48"
         }
     },
     {
         "selector": "edge",
         "style": {
             "curve-style": "bezier",
-            "label": "data(label)"
+            "label": "data(label)",
+
+            "font-family": ["Lato", "Segoe UI", "Lucida Sans Unicode", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
+            "font-size": "18px",
+            "font-weight": "800"
         }
     },
     {
