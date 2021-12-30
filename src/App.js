@@ -2,7 +2,7 @@ import './App.css';
 import stylesheet from './stylesheet.json';
 import { updateGraph } from './graphFunctions/updateGraph.js';
 import React, { useState, useRef } from 'react'
-import cytoscape from 'cytoscape'; 
+import cytoscape from 'cytoscape';
 import CytoscapeComponent from 'react-cytoscapejs';
 import AceEditor from 'react-ace';
 import { saveAs } from 'file-saver';
@@ -24,7 +24,7 @@ function App() {
             width: '600px'
           }}
           stylesheet={stylesheet}
-          cy={ (cy) => { cyRef.current = cy } }
+          cy={(cy) => { cyRef.current = cy }}
         />
         <div>
           <h3>Undirected edges</h3>
@@ -34,7 +34,7 @@ function App() {
             name='undirected'
             height='250px'
             width='300px'
-            onChange={ (userInput) => { setEdges(updateGraph(userInput, edges, 'undirected')) } }
+            onChange={(userInput) => { setEdges(updateGraph(userInput, edges, 'undirected')) }}
           />
           <h3>Directed edges</h3>
           <AceEditor
@@ -43,11 +43,12 @@ function App() {
             name='directed'
             height='250px'
             width='300px'
-            onChange={ (userInput) => { setEdges(updateGraph(userInput, edges, 'directed')) } }
+            onChange={(userInput) => { setEdges(updateGraph(userInput, edges, 'directed')) }}
           />
         </div>
       </div>
-      <button onClick={ () => { saveAs(cyRef.current.png(), 'graph.png') } }>Download</button>
+      <button onClick={() => { saveAs(cyRef.current.png(), 'graph.png') }}>Download PNG</button>
+      <button onClick={() => { saveAs(cyRef.current.jpg(), 'graph.jpg') }}>Download JPG</button>
     </div>
   );
 }
