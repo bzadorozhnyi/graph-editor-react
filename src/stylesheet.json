@@ -2,6 +2,11 @@
     {
         "selector": "node",
         "style": {
+            "background-color": "#808080",
+            "border-color": "black",
+            "border-style": "solid",
+            "border-width": "1px",
+
             "label": "data(label)",
             "text-halign": "center",
             "text-valign": "center",
@@ -15,14 +20,50 @@
         }
     },
     {
+        "selector": "node[backgroundColor]",
+        "style": {
+            "background-color": "data(backgroundColor)"
+        }
+    },
+    {
+        "selector": "node[color]",
+        "style": {
+            "color": "data(color)"
+        }
+    },
+    {
+        "selector": "node[fontSize]",
+        "style": {
+            "font-size": "data(fontSize)"
+        }
+    },
+    {
+        "selector": "node[opacity]",
+        "style": {
+            "background-opacity": "data(opacity)"
+        }
+    },
+    {
+        "selector": "node[size]",
+        "style": {
+            "height": "data(size)",
+            "width": "data(size)"
+        }
+    },
+    {
         "selector": "edge",
         "style": {
             "curve-style": "bezier",
-            "label": "data(label)",
 
             "font-family": ["Lato", "Segoe UI", "Lucida Sans Unicode", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
             "font-size": "18px",
             "font-weight": "800"
+        }
+    },
+    {
+        "selector": "edge[label]",
+        "style": {
+            "label": "data(label)"
         }
     },
     {

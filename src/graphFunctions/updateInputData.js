@@ -1,47 +1,75 @@
-export function updateInputData(userInput, oldEdges, direction) {
+export function updateInputData(undirectedValue, directedValue, styles) {
     let annotations = [];
-
-    let edges = {
-        undirected: [],
-        directed: []
+    let elements = {
+        nodes: [],
+        edges: {
+            directed: [],
+            undirected: []
+        }
     };
+    let setNodes = new Set();
 
-    // save unmodified data of another type of direction
-    if (direction === 'undirected') {
-        edges.directed = oldEdges.directed;
-    }
-    else {
-        edges.undirected = oldEdges.undirected;
+    function addNode(name) {
+        if (!(setNodes.has(name))) {
+            setNodes.add(name);
+            if(name in styles.nodes) {
+                elements.nodes.push({ data: { id: name, label: name, ...styles.nodes[name] } });
+            }
+            else {
+                elements.nodes.push({ data: { id: name, label: name } });
+            }
+        }
     }
 
     let index = 0;
-    userInput.split('\n').forEach(function (row) {
-        let items = row.split(' ').filter(item => item.length > 0);
-        switch (items.length) {
+    undirectedValue.split('\n').forEach(function (row) {
+        let userNodes = row.split(' ').filter(item => item.length > 0);
+        switch (userNodes.length) {
             case 0:
                 break;
             case 1:
-                edges[direction].push({ data: { id: items[0], label: items[0] } });
+                addNode(userNodes[0]);
                 break;
             case 2:
-                edges[direction].push({ data: { id: items[0], label: items[0] } });
-                edges[direction].push({ data: { id: items[1], label: items[1] } });
-                if (direction === 'undirected') {
-                    edges[direction].push({ data: { source: items[0], target: items[1] } });
-                }
-                else {
-                    edges[direction].push({ data: { source: items[0], target: items[1], arrow: "triangle" } });
-                }
+                addNode(userNodes[0]);
+                addNode(userNodes[1]);
+                elements.edges.undirected.push({ data: { source: userNodes[0], target: userNodes[1] } });
                 break;
             case 3:
-                edges[direction].push({ data: { id: items[0], label: items[0] } });
-                edges[direction].push({ data: { id: items[1], label: items[1] } });
-                if (direction === 'undirected') {
-                    edges[direction].push({ data: { source: items[0], target: items[1], label: items[2] } });
-                }
-                else {
-                    edges[direction].push({ data: { source: items[0], target: items[1], label: items[2], arrow: 'triangle' } });
-                }
+                addNode(userNodes[0]);
+                addNode(userNodes[1]);
+                elements.edges.undirected.push({ data: { source: userNodes[0], target: userNodes[1], label: userNodes[2] } });
+                break;
+            default:
+                annotations.push({
+                    row: index,
+                    type: 'error',
+                    text: 'No more than 3 elements allowed.'
+                })
+                break;
+        }
+
+        index++;
+    });
+
+    index = 0;
+    directedValue.split('\n').forEach(function (row) {
+        let userNodes = row.split(' ').filter(item => item.length > 0);
+        switch (userNodes.length) {
+            case 0:
+                break;
+            case 1:
+                addNode(userNodes[0]);
+                break;
+            case 2:
+                addNode(userNodes[0]);
+                addNode(userNodes[1]);
+                elements.edges.directed.push({ data: { source: userNodes[0], target: userNodes[1], arrow: "triangle" } });
+                break;
+            case 3:
+                addNode(userNodes[0]);
+                addNode(userNodes[1]);
+                elements.edges.directed.push({ data: { source: userNodes[0], target: userNodes[1], label: userNodes[2], arrow: "triangle" } });
                 break;
             default:
                 annotations.push({
@@ -57,6 +85,6 @@ export function updateInputData(userInput, oldEdges, direction) {
 
     return {
         newAnnotations: annotations,
-        newEdges: edges
+        newElements: elements
     };
 }
