@@ -26,6 +26,18 @@
         }
     },
     {
+        "selector": "node[borderColor]",
+        "style": {
+            "border-color": "data(borderColor)"
+        }
+    },
+    {
+        "selector": "node[borderWidth]",
+        "style": {
+            "border-width": "data(borderWidth)"
+        }
+    },
+    {
         "selector": "node[color]",
         "style": {
             "color": "data(color)"

@@ -1,6 +1,5 @@
 import './App.css';
 import { ColorPicker, createColor } from 'material-ui-color';
-import IntegerInput from './IntegerInput.js';
 import { Slider } from '@mui/material';
 
 function NodeEditor(props) {
@@ -10,34 +9,6 @@ function NodeEditor(props) {
     return (
         <div className="node-editor">
             <h1>{ tappedNodeId === '' ? 'Node not selected' : tappedNodeId }</h1>
-            <hr></hr>
-            <div className='row'>
-                <h2>Size of node: </h2>
-                <div className='slider-wrapper'>
-                    <Slider
-                        marks
-                        max={100}
-                        min={50}
-                        onChange={(event, value) => {
-                            if (tappedNodeId !== '') {
-                                if (!(tappedNodeId in styles.nodes)) {
-                                    styles.nodes[tappedNodeId] = {};
-                                }
-                                styles.nodes[tappedNodeId].size = value;
-                                
-                                let newElements = JSON.parse(JSON.stringify(elements));
-                                newElements.nodes.find(x => x.data.id === tappedNodeId).data.size = value;
-
-                                setElements(newElements);
-                                setStyles(styles);
-                            }
-                        }}
-                        step={10}
-                        value={(tappedNodeId in styles.nodes) ? styles.nodes[tappedNodeId].size : 50} // set node`s size
-                        valueLabelDisplay="auto"
-                    />
-                </div>
-            </div>
             <hr></hr>
             <div className='row'>
                 <h2>Background color: </h2>
@@ -76,13 +47,40 @@ function NodeEditor(props) {
             </div>
             <hr></hr>
             <div className='row'>
+                <h2>Size of node: </h2>
+                <div className='slider-wrapper'>
+                    <Slider
+                        marks
+                        max={100}
+                        min={50}
+                        onChange={(event, value) => {
+                            if (tappedNodeId !== '') {
+                                if (!(tappedNodeId in styles.nodes)) {
+                                    styles.nodes[tappedNodeId] = {};
+                                }
+                                styles.nodes[tappedNodeId].size = value;
+                                
+                                let newElements = JSON.parse(JSON.stringify(elements));
+                                newElements.nodes.find(x => x.data.id === tappedNodeId).data.size = value;
+
+                                setElements(newElements);
+                                setStyles(styles);
+                            }
+                        }}
+                        step={10}
+                        value={(tappedNodeId in styles.nodes) ? styles.nodes[tappedNodeId].size : 50} // set node`s size
+                        valueLabelDisplay="auto"
+                    />
+                </div>
+            </div>
+            <hr></hr>
+            <div className='row'>
                 <h2>Font color: </h2>
                 <ColorPicker
                     defaultValue={defaultColor}
                     disableAlpha
                     hideTextfield
                     onChange={(value) => {
-                        console.log('color ', tappedNodeId);
                         if (tappedNodeId !== '') {
                             if (!(tappedNodeId in styles.nodes)) {
                                 styles.nodes[tappedNodeId] = {};
@@ -106,31 +104,94 @@ function NodeEditor(props) {
                 />
             </div>
             <hr></hr>
-            <IntegerInput
-                handleChange={(event) => {
-                    let newFontSize = Number(event.target.value);
-                    console.log('font', elements);
-                    if (tappedNodeId !== '') {
-                        if (!(tappedNodeId in styles.nodes)) {
-                            styles.nodes[tappedNodeId] = {};
+            <div className='row'>
+                <h2>Font size: </h2>
+                <div className='slider-wrapper'>
+                    <Slider
+                        max={100}
+                        min={1}
+                        onChange={(event) => {
+                            let newFontSize = Number(event.target.value);
+                            if (tappedNodeId !== '') {
+                                if (!(tappedNodeId in styles.nodes)) {
+                                    styles.nodes[tappedNodeId] = {};
+                                }
+                                
+                                styles.nodes[tappedNodeId].fontSize = newFontSize;
+
+                                let newElements = JSON.parse(JSON.stringify(elements));
+                                let tappedNode = newElements.nodes.find(x => x.data.id === tappedNodeId);
+
+                                tappedNode.data.fontSize = newFontSize;
+
+                                setElements(newElements);
+                                setStyles(styles);
+                            }
+                        }}
+                        step={5}
+                        value={(tappedNodeId !== '' ? (tappedNodeId in styles.nodes ? styles.nodes[tappedNodeId].fontSize : 18) : 1)}
+                        valueLabelDisplay="auto"
+                    />
+                </div>
+            </div>
+            <hr></hr>
+            <div className='row'>
+                <h2>Border color: </h2>
+                <ColorPicker
+                    defaultValue={'black'}
+                    disableAlpha
+                    hideTextfield
+                    onChange={(value) => {
+                        if (tappedNodeId !== '') {
+                            if (!(tappedNodeId in styles.nodes)) {
+                                styles.nodes[tappedNodeId] = {};
+                            }
+                            
+                            let newColor = value.css.backgroundColor;
+                            styles.nodes[tappedNodeId].borderColor = (value.hasOwnProperty('error') ? 'black' : newColor);
+                            //need to set border color in ColorPicker
+                            styles.nodes[tappedNodeId].borderColorPicker = value;
+
+                            let newElements = JSON.parse(JSON.stringify(elements));
+                            let tappedNode = newElements.nodes.find(x => x.data.id === tappedNodeId);
+
+                            tappedNode.data.borderColor = newColor;
+
+                            setElements(newElements);
+                            setStyles(styles);
                         }
-                        
-                        styles.nodes[tappedNodeId].fontSize = newFontSize;
+                    }}
+                    value={(tappedNodeId in styles.nodes) && (styles.nodes[tappedNodeId].hasOwnProperty('borderColorPicker')) ? styles.nodes[tappedNodeId].borderColorPicker : createColor('black')}
+                />
+            </div>
+            <hr></hr>
+            <div className='row'>
+                <h2>Width of border: </h2>
+                <div className='slider-wrapper'>
+                    <Slider
+                        marks
+                        max={10}
+                        min={0}
+                        onChange={(event, value) => {
+                            if (tappedNodeId !== '') {
+                                if (!(tappedNodeId in styles.nodes)) {
+                                    styles.nodes[tappedNodeId] = {};
+                                }
+                                styles.nodes[tappedNodeId].borderWidth = value;
+                                
+                                let newElements = JSON.parse(JSON.stringify(elements));
+                                newElements.nodes.find(x => x.data.id === tappedNodeId).data.borderWidth = value;
 
-                        let newElements = JSON.parse(JSON.stringify(elements));
-                        let tappedNode = newElements.nodes.find(x => x.data.id === tappedNodeId);
-
-                        tappedNode.data.fontSize = newFontSize;
-
-                        setElements(newElements);
-                        setStyles(styles);
-                    }
-                }}
-                minValue={0}
-                maxValue={64}
-                placeholder='Font size'
-                value={(tappedNodeId !== '' ? (tappedNodeId in styles.nodes ? styles.nodes[tappedNodeId].fontSize : 18) : '')}
-            />
+                                setElements(newElements);
+                                setStyles(styles);
+                            }
+                        }}
+                        step={1}
+                        value={(tappedNodeId in styles.nodes) ? styles.nodes[tappedNodeId].borderWidth : 0}
+                        valueLabelDisplay="auto"
+                    />
+                </div>
+            </div>
         </div>
     );
 }
