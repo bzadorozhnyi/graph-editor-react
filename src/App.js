@@ -1,12 +1,11 @@
 import './App.css';
 import stylesheet from './stylesheet.json';
-import { updateInputData } from './graphFunctions/updateInputData.js';
 import React, { useState, useRef } from 'react';
 import cytoscape from 'cytoscape';
 import CytoscapeComponent from 'react-cytoscapejs';
-import AceEditor from 'react-ace';
 import { saveAs } from 'file-saver';
-import NodeEditor from './NodeEditor';
+import UserMenu from './components/UserMenu';
+import Button from '@mui/material/Button'
 
 function concatNodesAndEdges(elements) {
   const {nodes, edges} = elements;
@@ -15,11 +14,10 @@ function concatNodesAndEdges(elements) {
 
 function App() {
   const cyRef = useRef(cytoscape({ /* options */ }));
-  const undirectedEditorRef = useRef();
-  const directedEditorRef = useRef();
   const [tappedNodeId, setTappedNodeId] = useState('');
 
   const [elements, setElements] = useState({
+    dictOfNodes: {},
     nodes: [],
     edges: {
         directed: [],
@@ -63,56 +61,19 @@ function App() {
           cy={(cy) => { cyRef.current = cy; }}
         />
 
-        <NodeEditor
+        <UserMenu
           elements={elements}
           tappedNodeId={tappedNodeId}
           setElements={setElements}
           setStyles={setStyles}
           styles={styles}
         />
-
-        <div>
-          <h3>Undirected edges</h3>
-          <AceEditor
-            annotations={[]}
-            className='input-graph-data'
-            mode='javascript'
-            name='undirected'
-            ref={(editor) => { undirectedEditorRef.current = editor }}
-            height='235px'
-            width='300px'
-            onChange={(undirectedValue) => {
-              const directedValue = directedEditorRef.current.editor.getValue();
-              const { newAnnotations, newElements } = updateInputData(undirectedValue, directedValue, styles);
-              // update annotations
-              undirectedEditorRef.current.editor.getSession().setAnnotations(newAnnotations);
-              setElements(newElements);
-            }}
-          />
-
-          <h3>Directed edges</h3>
-          <AceEditor
-            className='input-graph-data'
-            mode='javascript'
-            name='directed'
-            ref={(editor) => { directedEditorRef.current = editor }}
-            height='235px'
-            width='300px'
-            onChange={(directedValue) => {
-              const undirectedValue = undirectedEditorRef.current.editor.getValue();
-              const { newAnnotations, newElements } = updateInputData(undirectedValue, directedValue, styles);
-              // update annotations
-              directedEditorRef.current.editor.getSession().setAnnotations(newAnnotations);
-              setElements(newElements);
-            }}
-          />
-        </div>
       </div>
 
       <div className="download-buttons-wrapper">
-        <button className='download-button' onClick={() => { saveAs(cyRef.current.png(), 'graph.png') }}>Download PNG</button>
-        <button className='download-button' onClick={() => { saveAs(cyRef.current.jpg(), 'graph.jpg') }}>Download JPG</button>
-      </div>    
+        <Button onClick={() => { saveAs(cyRef.current.png(), 'graph.png') }} variant='outlined' >Download PNG</Button>
+        <Button onClick={() => { saveAs(cyRef.current.jpg(), 'graph.jpg') }} variant='outlined' >Download JPG</Button>
+      </div>
     </div>
   );
 }

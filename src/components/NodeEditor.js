@@ -1,4 +1,3 @@
-import './App.css';
 import { ColorPicker, createColor } from 'material-ui-color';
 import { Slider } from '@mui/material';
 
