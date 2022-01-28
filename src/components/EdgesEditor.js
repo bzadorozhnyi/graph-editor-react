@@ -16,6 +16,7 @@ class EdgesEditor extends Component {
             id: uuidv4(),
             source: "",
             target: "",
+            label: ""
         });
         this.setState({ ...edgeInputs });
     };
@@ -43,7 +44,7 @@ class EdgesEditor extends Component {
         let changedEdge = this.state.edgeInputs.find(
             (edge) => edge.id === changedEdgeId
         );
-        let { id, source, target } = changedEdge;
+        let { id, source, target, label } = changedEdge;
 
         let { elements, styles } = this.props;
         elements = JSON.parse(JSON.stringify(elements));
@@ -67,37 +68,21 @@ class EdgesEditor extends Component {
         let oldValue = changedEdge[property];
         changedEdge[property] = newValue;
 
-        // for source and target cases
-        let direction = changedEdge["directed"] ? "directed" : "undirected";
-
         switch (property) {
             case "directed":
                 // set 'directed' new value because of bug in switch new value (not local problem)
-                newValue = !oldValue;
-                changedEdge["directed"] = newValue;
+                changedEdge.directed = !oldValue;
 
                 // if edge exists => change arrow of it
                 if (source !== "" && target !== "") {
-                    let oldDirection = oldValue ? "directed" : "undirected";
-                    let newDirection = newValue ? "directed" : "undirected";
-
-                    // remove from directed/undirected edges current edge
-                    elements.edges[oldDirection] = elements.edges[
-                        oldDirection
-                    ].filter((edge) => edge.data.id !== id);
-
-                    // set new edge id
-                    changedEdge.id = uuidv4();
-
-                    // add to undirected/directed edges current edge
-                    elements.edges[newDirection].push({
-                        data: {
-                            arrow: newValue ? "triangle" : "none",
-                            id: changedEdge.id,
-                            source: source,
-                            target: target,
-                        },
-                    });
+                    let currentEdge = elements.edges.find(edge => edge.data.id === id);
+                    currentEdge.data.arrow = changedEdge.directed ? "triangle" : "none";
+                }
+                break;
+            case "label":
+                if(source !== '' && target !== '') {
+                    let currentEdge = elements.edges.find(edge => edge.data.id === id);
+                    currentEdge.data.label = newValue;
                 }
                 break;
             case "source":
@@ -110,15 +95,13 @@ class EdgesEditor extends Component {
 
                     // add new edge if it exists
                     if (newValue !== "" && target !== "") {
-                        elements.edges[direction].push({
+                        elements.edges.push({
                             data: {
-                                arrow:
-                                    direction === "directed"
-                                        ? "triangle"
-                                        : "none",
+                                arrow: changedEdge.directed ? "triangle" : "none",
                                 id: changedEdge.id,
                                 source: newValue,
                                 target: target,
+                                label: label
                             },
                         });
                     }
@@ -126,7 +109,7 @@ class EdgesEditor extends Component {
                     // remove source node if need
                     if (--elements.dictOfNodes[oldValue] === 0) {
                         delete elements.dictOfNodes[oldValue];
-                        delete styles[oldValue];
+                        delete styles.nodes[oldValue];
                         elements.nodes = elements.nodes.filter(
                             (node) => node.data.id !== oldValue
                         );
@@ -134,27 +117,39 @@ class EdgesEditor extends Component {
                     // add new node if need
                     addNode(newValue);
 
+                    // set current edge style
+                    let edgeStyle = id in styles.edges ? styles.edges[id] : {};
+
                     // remove old edge
-                    elements.edges[direction] = elements.edges[
-                        direction
-                    ].filter((edge) => edge.data.id !== id);
+                    elements.edges = elements.edges.filter((edge) => edge.data.id !== id);
 
                     // set new edge id
                     changedEdge.id = uuidv4();
 
+                    // set new edge style as current
+                    styles.edges[changedEdge.id] = edgeStyle;
+
                     // add new edge if it`s possible
                     if (newValue !== "" && target !== "") {
-                        elements.edges[direction].push({
+                        elements.edges.push({
                             data: {
-                                arrow:
-                                    direction === "directed"
-                                        ? "triangle"
-                                        : "none",
+                                arrow: changedEdge.directed ? "triangle" : "none",
                                 id: changedEdge.id,
                                 source: newValue,
                                 target: target,
+                                label: label,
+                                ...edgeStyle
                             },
                         });
+
+                        // if current edge is tapped => set new id of tapped edge
+                        if(id === this.props.tappedEdgeId) {
+                            this.props.setTappedEdgeId(changedEdge.id);
+                        }
+                    }
+                    // if cannot add edge and current edge is tapped => update tappedEdgeId
+                    else if(id === this.props.tappedEdgeId) { 
+                        this.props.setTappedEdgeId('');
                     }
                 }
                 break;
@@ -168,15 +163,13 @@ class EdgesEditor extends Component {
 
                     // add new edge if it exists
                     if (source !== "" && newValue !== "") {
-                        elements.edges[direction].push({
+                        elements.edges.push({
                             data: {
-                                arrow:
-                                    direction === "directed"
-                                        ? "triangle"
-                                        : "none",
+                                arrow: changedEdge.directed ? "triangle" : "none",
                                 id: changedEdge.id,
                                 source: source,
                                 target: newValue,
+                                label: label
                             },
                         });
                     }
@@ -184,7 +177,7 @@ class EdgesEditor extends Component {
                     // remove target node if need
                     if (--elements.dictOfNodes[oldValue] === 0) {
                         delete elements.dictOfNodes[oldValue];
-                        delete styles[oldValue];
+                        delete styles.nodes[oldValue];
                         elements.nodes = elements.nodes.filter(
                             (node) => node.data.id !== oldValue
                         );
@@ -192,27 +185,39 @@ class EdgesEditor extends Component {
                     // add new node if need
                     addNode(newValue);
 
+                    // set current edge style
+                    let edgeStyle = id in styles.edges ? styles.edges[id] : {};
+
                     // remove old edge
-                    elements.edges[direction] = elements.edges[
-                        direction
-                    ].filter((edge) => edge.data.id !== id);
+                    elements.edges = elements.edges.filter((edge) => edge.data.id !== id);
 
                     // set new edge id
                     changedEdge.id = uuidv4();
 
+                    // set new edge style as current
+                    styles.edges[changedEdge.id] = edgeStyle;
+
                     // add new edge if it`s possible
                     if (newValue !== "" && target !== "") {
-                        elements.edges[direction].push({
+                        elements.edges.push({
                             data: {
-                                arrow:
-                                    direction === "directed"
-                                        ? "triangle"
-                                        : "none",
+                                arrow: changedEdge.directed ? "triangle" : "none",
                                 id: changedEdge.id,
                                 source: source,
                                 target: newValue,
+                                label: label,
+                                ...edgeStyle
                             },
                         });
+
+                        // if current edge is tapped => set new id of tapped edge
+                        if(id === this.props.tappedEdgeId) {
+                            this.props.setTappedEdgeId(changedEdge.id);
+                        }
+                    }
+                    // if cannot add edge and current edge is tapped => update tappedEdgeId
+                    else if(id === this.props.tappedEdgeId) { 
+                        this.props.setTappedEdgeId('');
                     }
                 }
                 break;
@@ -226,19 +231,19 @@ class EdgesEditor extends Component {
     };
 
     removeOldData = (removedEdge, elements, styles) => {
-        const { directed, id, source, target } = removedEdge;
+        const { id, source, target } = removedEdge;
 
         // remove not existed nodes
         if (source !== "" && --elements.dictOfNodes[source] === 0) {
             delete elements.dictOfNodes[source];
-            delete styles[source];
+            delete styles.nodes[source];
             elements.nodes = elements.nodes.filter(
                 (node) => node.data.id !== source
             );
         }
         if (target !== "" && --elements.dictOfNodes[target] === 0) {
             delete elements.dictOfNodes[target];
-            delete styles[target];
+            delete styles.nodes[target];
             elements.nodes = elements.nodes.filter(
                 (node) => node.data.id !== target
             );
@@ -246,8 +251,12 @@ class EdgesEditor extends Component {
 
         // remove edge
         if (source !== "" && target !== "") {
-            let direction = directed ? "directed" : "undirected";
-            elements.edges[direction] = elements.edges[direction].filter(
+            delete styles.edges[id];
+            // if removed edge is tapped => set tappedEdgeId as empty
+            if(id === this.props.tappedEdgeId) {
+                this.props.setTappedEdgeId('');
+            }
+            elements.edges = elements.edges.filter(
                 (edge) => edge.data.id !== id
             );
         }
@@ -255,11 +264,11 @@ class EdgesEditor extends Component {
 
     render() {
         return (
-            <div className='edge-editor'>
+            <div className='edges-editor'>
                 <div style={{'background-color': 'white', 'position': 'sticky', 'top': '0px', 'z-index': '10'}}>
                     <Button onClick={this.addEdge}>Add edge</Button>
                 </div>
-                <div className='edge-list'>
+                <div className='edges-list'>
                         {this.state.edgeInputs.map((edgeInput) => (
                             <EdgeInput
                                 edge={edgeInput}

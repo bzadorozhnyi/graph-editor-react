@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, Tab, Tabs } from "@mui/material";
+import EdgeEditor from './EdgeEditor';
 import EdgesEditor from './EdgesEditor';
 import NodeEditor from './NodeEditor';
 
@@ -12,11 +13,22 @@ export default function UserMenu(props) {
         <div>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs onChange={handleChange} value={value}>
-                    <Tab label='Node styling' />
                     <Tab label='Edges editor' />
+                    <Tab label='Node styling' />
+                    <Tab label='Edge styling' />
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
+                <EdgesEditor
+                    elements={props.elements}
+                    setElements={props.setElements}
+                    setStyles={props.setStyles}
+                    setTappedEdgeId={props.setTappedEdgeId}
+                    styles={props.styles}
+                    tappedEdgeId={props.tappedEdgeId}
+                />
+            </TabPanel>
+            <TabPanel value={value} index={1}>
                 <NodeEditor
                     elements={props.elements}
                     tappedNodeId={props.tappedNodeId}
@@ -25,12 +37,13 @@ export default function UserMenu(props) {
                     styles={props.styles}
                 />
             </TabPanel>
-            <TabPanel value={value} index={1}>
-                <EdgesEditor
+            <TabPanel value={value} index={2}>
+                <EdgeEditor
                     elements={props.elements}
                     setElements={props.setElements}
                     setStyles={props.setStyles}
                     styles={props.styles}
+                    tappedEdgeId={props.tappedEdgeId}
                 />
             </TabPanel>
         </div>

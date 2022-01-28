@@ -6,7 +6,7 @@ function NodeEditor(props) {
     let defaultColor = createColor('#808080');
 
     return (
-        <div className="node-editor">
+        <div className="style-editor">
             <h1>{ tappedNodeId === '' ? 'Node not selected' : tappedNodeId }</h1>
             <hr></hr>
             <div className='row'>
@@ -32,7 +32,7 @@ function NodeEditor(props) {
                             styles.nodes[tappedNodeId].backgroundColorAndOpacity = value;
 
                             let newElements = JSON.parse(JSON.stringify(elements));
-                            let tappedNode = newElements.nodes.find(x => x.data.id === tappedNodeId);
+                            let tappedNode = newElements.nodes.find(node => node.data.id === tappedNodeId);
 
                             tappedNode.data.backgroundColor = newColor;
                             tappedNode.data.opacity = newOpacity;

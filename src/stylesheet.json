@@ -69,7 +69,9 @@
 
             "font-family": ["Lato", "Segoe UI", "Lucida Sans Unicode", "Helvetica Neue", "Helvetica", "Arial", "sans-serif"],
             "font-size": "18px",
-            "font-weight": "800"
+            "font-weight": "800",
+
+            "width": "1"
         }
     },
     {
@@ -82,6 +84,43 @@
         "selector": "edge[arrow]",
         "style": {
             "target-arrow-shape": "data(arrow)"
+        }
+    },
+    {
+        "selector": "edge[color]",
+        "style": {
+            "line-color": "data(color)",
+            "target-arrow-color": "data(color)"
+        }
+    },
+    {
+        "selector": "edge[fontSize]",
+        "style": {
+            "font-size": "data(fontSize)"
+        }
+    },
+    {
+        "selector": "edge[lineStyle]",
+        "style": {
+            "line-style": "data(lineStyle)"
+        }
+    },
+    {
+        "selector": "edge[opacity]",
+        "style": {
+            "line-opacity": "data(opacity)"
+        }
+    },
+    {
+        "selector": "edge[labelColor]",
+        "style": {
+            "color": "data(labelColor)"
+        }
+    },
+    {
+        "selector": "edge[width]",
+        "style": {
+            "width": "data(width)"
         }
     }
 ]

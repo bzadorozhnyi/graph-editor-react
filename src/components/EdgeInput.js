@@ -33,6 +33,19 @@ class EdgeInput extends Component {
                     value={this.props.edge.target}
                     variant='filled'
                 />
+                <TextField
+                    label='Label'
+                    onChange={(event) =>
+                        this.props.onChange(
+                            this.props.edge.id,
+                            'label',
+                            event.target.value
+                        )
+                    }
+                    size='small'
+                    style={{ backgroundColor: 'white' }}
+                    variant='filled'
+                />
                 <FormControlLabel
                     control={
                         <Switch

@@ -5,24 +5,22 @@ import cytoscape from 'cytoscape';
 import CytoscapeComponent from 'react-cytoscapejs';
 import { saveAs } from 'file-saver';
 import UserMenu from './components/UserMenu';
-import Button from '@mui/material/Button'
+import Button from '@mui/material/Button';
 
 function concatNodesAndEdges(elements) {
   const {nodes, edges} = elements;
-  return nodes.concat(edges.undirected, edges.directed);
+  return nodes.concat(edges);
 }
 
 function App() {
   const cyRef = useRef(cytoscape({ /* options */ }));
   const [tappedNodeId, setTappedNodeId] = useState('');
+  const [tappedEdgeId, setTappedEdgeId] = useState('');
 
   const [elements, setElements] = useState({
     dictOfNodes: {},
     nodes: [],
-    edges: {
-        directed: [],
-        undirected: []
-    }
+    edges: []
   });
 
   const [styles, setStyles] = useState({
@@ -32,8 +30,7 @@ function App() {
 
   cyRef.current.removeListener('tap');
   cyRef.current.on('tap', 'node', (event) => {
-    let node = event.target;
-    setTappedNodeId(node.id());
+    setTappedNodeId(event.target.id());
   });
   cyRef.current.on('remove', 'node', (event) => {
     let node = event.target;
@@ -42,7 +39,12 @@ function App() {
       setTappedNodeId('');
     }
     setStyles({...styles});
-  })
+  });
+
+  cyRef.current.on('tap', 'edge', (event) => {
+    setTappedEdgeId(event.target.id());
+  });
+  // update and (set empty) of tappedEdgeId implemented in EdgesEditor
 
   return (
     <div className="App">
@@ -63,10 +65,12 @@ function App() {
 
         <UserMenu
           elements={elements}
-          tappedNodeId={tappedNodeId}
           setElements={setElements}
           setStyles={setStyles}
+          setTappedEdgeId={setTappedEdgeId}
           styles={styles}
+          tappedEdgeId={tappedEdgeId}
+          tappedNodeId={tappedNodeId}
         />
       </div>
 
