@@ -78,7 +78,7 @@ function EdgeEditor(props) {
             <ToggleButtonGroup
                 color="primary"
                 defaultValue={'solid'}
-                value={(tappedEdgeId in styles.edges) ? styles.edges[tappedEdgeId].lineStyle : 'solid'}
+                value={tappedEdgeId in styles.edges && styles.edges[tappedEdgeId].hasOwnProperty('lineStyle') ? styles.edges[tappedEdgeId].lineStyle : 'solid'}
                 exclusive
                 onChange={(event, value) => {
                     if (tappedEdgeId !== '') {

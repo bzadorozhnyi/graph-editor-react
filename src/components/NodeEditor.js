@@ -128,7 +128,7 @@ function NodeEditor(props) {
                             }
                         }}
                         step={5}
-                        value={(tappedNodeId !== '' ? (tappedNodeId in styles.nodes ? styles.nodes[tappedNodeId].fontSize : 18) : 1)}
+                        value={tappedNodeId in styles.nodes && styles.nodes[tappedNodeId].hasOwnProperty('fontSize') ? styles.nodes[tappedNodeId].fontSize : 18}
                         valueLabelDisplay="auto"
                     />
                 </div>
@@ -186,7 +186,7 @@ function NodeEditor(props) {
                             }
                         }}
                         step={1}
-                        value={(tappedNodeId in styles.nodes) ? styles.nodes[tappedNodeId].borderWidth : 0}
+                        value={tappedNodeId in styles.nodes && styles.nodes[tappedNodeId].hasOwnProperty('borderWidth') ? styles.nodes[tappedNodeId].borderWidth : 1}
                         valueLabelDisplay="auto"
                     />
                 </div>
