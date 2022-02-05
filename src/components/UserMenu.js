@@ -12,7 +12,7 @@ export default function UserMenu(props) {
     return (
         <div>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs onChange={handleChange} value={value}>
+                <Tabs centered onChange={handleChange} value={value}>
                     <Tab label='Edges editor' />
                     <Tab label='Node styling' />
                     <Tab label='Edge styling' />
@@ -51,5 +51,5 @@ export default function UserMenu(props) {
 }
 
 function TabPanel(props) {
-    return <div style={{height: '700px'}} hidden={props.value !== props.index}>{props.children}</div>;
+    return <div style={{height: '635px'}} hidden={props.value !== props.index}>{props.children}</div>;
 }

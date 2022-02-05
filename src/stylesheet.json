@@ -106,6 +106,18 @@
         }
     },
     {
+        "selector": "edge[marginX]",
+        "style": {
+            "text-margin-x": "data(marginX)"
+        }
+    },
+    {
+        "selector": "edge[marginY]",
+        "style": {
+            "text-margin-y": "data(marginY)"
+        }
+    },
+    {
         "selector": "edge[opacity]",
         "style": {
             "line-opacity": "data(opacity)"

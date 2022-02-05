@@ -15,7 +15,6 @@ class EdgeInput extends Component {
                         )
                     }
                     size='small'
-                    style={{ backgroundColor: 'white' }}
                     value={this.props.edge.source}
                     variant='filled'
                 />
@@ -29,7 +28,6 @@ class EdgeInput extends Component {
                         )
                     }
                     size='small'
-                    style={{ backgroundColor: 'white' }}
                     value={this.props.edge.target}
                     variant='filled'
                 />
@@ -43,7 +41,6 @@ class EdgeInput extends Component {
                         )
                     }
                     size='small'
-                    style={{ backgroundColor: 'white' }}
                     variant='filled'
                 />
                 <FormControlLabel

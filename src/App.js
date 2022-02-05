@@ -25,12 +25,32 @@ function App() {
 
   const [styles, setStyles] = useState({
     edges: {},
-    nodes: {}
+    nodes: {},
+    isEdgeStyleCopyActive: false,
+    isNodeStyleCopyActive: false,
   });
 
   cyRef.current.removeListener('tap');
   cyRef.current.on('tap', 'node', (event) => {
-    setTappedNodeId(event.target.id());
+    let newTappedNodeId = event.target.id();
+    if(elements.isNodeStyleCopyActive) {
+      // copy style from tapped node to previous tapped node 
+      styles.nodes[tappedNodeId] = typeof styles.nodes[newTappedNodeId] === 'undefined' ? {} : {...styles.nodes[newTappedNodeId]};
+
+      // update data in elements
+      let newElements = JSON.parse(JSON.stringify(elements));
+      let tappedNode = newElements.nodes.find(node => node.data.id === tappedNodeId);
+      tappedNode.data = { id: tappedNodeId, label: tappedNodeId, ...styles.nodes[tappedNodeId] };
+
+      // reset node's (copy button icon) props
+      newElements.isNodeStyleCopyActive = false;
+
+      setElements({...newElements});
+      setStyles({...styles})
+    }
+    else {
+      setTappedNodeId(newTappedNodeId);
+    }
   });
   cyRef.current.on('remove', 'node', (event) => {
     let node = event.target;
@@ -38,13 +58,41 @@ function App() {
     if(node.id() === tappedNodeId) {
       setTappedNodeId('');
     }
+    if(elements.isNodeStyleCopyActive) {
+      elements.isNodeStyleCopyActive = false;
+      setElements({...elements});
+    }
     setStyles({...styles});
   });
 
   cyRef.current.on('tap', 'edge', (event) => {
-    setTappedEdgeId(event.target.id());
+    let newTappedEdgeId = event.target.id();
+    if(elements.isEdgeStyleCopyActive) {
+      // copy style from tapped edge to previous tapped edge 
+      styles.edges[tappedEdgeId] = typeof styles.edges[newTappedEdgeId] === 'undefined' ? {} : {...styles.edges[newTappedEdgeId]};
+      
+      // update data in elements
+      let newElements = JSON.parse(JSON.stringify(elements));
+      let tappedEdge = newElements.edges.find(edge => edge.data.id === tappedEdgeId);
+      tappedEdge.data = { id: tappedEdgeId, label: tappedEdge.data.label, ...styles.edges[tappedEdgeId] };
+
+      // reset edge's (copy button icon) props
+      newElements.isEdgeStyleCopyActive = false;
+
+      setElements({...newElements});
+      setStyles({...styles})
+    }
+    else {
+      setTappedEdgeId(newTappedEdgeId);
+    }
   });
-  // update and (set empty) of tappedEdgeId implemented in EdgesEditor
+  cyRef.current.on('remove', 'edge', (event) => {
+    // update and (set empty) of tappedEdgeId implemented in EdgesEditor
+    if(elements.isEdgeStyleCopyActive) {
+      elements.isEdgeStyleCopyActive = false;
+      setElements({...elements});
+    }
+  });
 
   return (
     <div className="App">
