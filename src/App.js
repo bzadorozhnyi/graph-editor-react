@@ -1,6 +1,6 @@
 import './App.css';
 import stylesheet from './stylesheet.json';
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import cytoscape from 'cytoscape';
 import CytoscapeComponent from 'react-cytoscapejs';
 import { saveAs } from 'file-saver';
@@ -13,6 +13,12 @@ function concatNodesAndEdges(elements) {
 }
 
 function App() {
+  // set title
+  useEffect(() => {
+    document.title = "Graph Editor";  
+  }, []);
+
+  // handle graph events and data memorization 
   const cyRef = useRef(cytoscape({ /* options */ }));
   const [tappedNodeId, setTappedNodeId] = useState('');
   const [tappedEdgeId, setTappedEdgeId] = useState('');

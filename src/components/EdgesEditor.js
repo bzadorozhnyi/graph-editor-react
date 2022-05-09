@@ -265,7 +265,7 @@ class EdgesEditor extends Component {
     render() {
         return (
             <div className='edges-editor panel'>
-                <div style={{'background-color': 'white', 'position': 'sticky', 'top': '0px', 'z-index': '10'}}>
+                <div style={{'backgroundColor': 'white', 'position': 'sticky', 'top': '0px', 'zIndex': '10'}}>
                     <Button onClick={this.addEdge}>Add edge</Button>
                 </div>
                 <div className='edges-list'>
