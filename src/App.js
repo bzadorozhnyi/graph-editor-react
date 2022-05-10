@@ -12,6 +12,10 @@ function concatNodesAndEdges(elements) {
   return nodes.concat(edges);
 }
 
+function copyObject(x) {
+  return JSON.parse(JSON.stringify(x));
+}
+
 function App() {
   // set title
   useEffect(() => {
@@ -41,12 +45,12 @@ function App() {
     let newTappedNodeId = event.target.id();
     if(elements.isNodeStyleCopyActive) {
       // copy style from tapped node to previous tapped node 
-      styles.nodes[tappedNodeId] = typeof styles.nodes[newTappedNodeId] === 'undefined' ? {} : {...styles.nodes[newTappedNodeId]};
+      styles.nodes[tappedNodeId] = typeof styles.nodes[newTappedNodeId] === 'undefined' ? {} : copyObject(styles.nodes[newTappedNodeId]);
 
       // update data in elements
       let newElements = JSON.parse(JSON.stringify(elements));
       let tappedNode = newElements.nodes.find(node => node.data.id === tappedNodeId);
-      tappedNode.data = { id: tappedNodeId, label: tappedNodeId, ...styles.nodes[tappedNodeId] };
+      tappedNode.data = { id: tappedNodeId, label: tappedNodeId, ...copyObject(styles.nodes[tappedNodeId]) };
 
       // reset node's (copy button icon) props
       newElements.isNodeStyleCopyActive = false;
@@ -75,7 +79,7 @@ function App() {
     let newTappedEdgeId = event.target.id();
     if(elements.isEdgeStyleCopyActive) {
       // copy style from tapped edge to previous tapped edge 
-      styles.edges[tappedEdgeId] = typeof styles.edges[newTappedEdgeId] === 'undefined' ? {} : {...styles.edges[newTappedEdgeId]};
+      styles.edges[tappedEdgeId] = typeof styles.edges[newTappedEdgeId] === 'undefined' ? {} : copyObject(styles.edges[newTappedEdgeId]);
       
       // update data in elements
       let newElements = JSON.parse(JSON.stringify(elements));
@@ -111,21 +115,23 @@ function App() {
             border: '2px solid black',
             borderRadius: '6px',
             height: '100%',
-            width: '600px'
+            width: '40%'
           }}
           stylesheet={stylesheet}
           cy={(cy) => { cyRef.current = cy; }}
         />
 
-        <UserMenu
-          elements={elements}
-          setElements={setElements}
-          setStyles={setStyles}
-          setTappedEdgeId={setTappedEdgeId}
-          styles={styles}
-          tappedEdgeId={tappedEdgeId}
-          tappedNodeId={tappedNodeId}
-        />
+        <div style={{"width": "60%"}}>
+          <UserMenu
+            elements={elements}
+            setElements={setElements}
+            setStyles={setStyles}
+            setTappedEdgeId={setTappedEdgeId}
+            styles={styles}
+            tappedEdgeId={tappedEdgeId}
+            tappedNodeId={tappedNodeId}
+          />
+        </div>
       </div>
 
       <div className="download-buttons-wrapper">

@@ -39,6 +39,10 @@ class EdgesEditor extends Component {
         this.setState({ edgeInputs });
         this.props.setElements({ ...elements });
         this.props.setStyles({ ...styles });
+
+        // console.log({edgeInputs});
+        // console.log({elements});
+        // console.log({styles});
     };
     handleEdgeChange = (changedEdgeId, property, newValue) => {
         let changedEdge = this.state.edgeInputs.find(
@@ -265,7 +269,7 @@ class EdgesEditor extends Component {
     render() {
         return (
             <div className='edges-editor panel'>
-                <div style={{'backgroundColor': 'white', 'position': 'sticky', 'top': '0px', 'zIndex': '10'}}>
+                <div id="addEdgeButton">
                     <Button onClick={this.addEdge}>Add edge</Button>
                 </div>
                 <div className='edges-list'>

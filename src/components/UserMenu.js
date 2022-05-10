@@ -10,7 +10,7 @@ export default function UserMenu(props) {
         setValue(value);
     };
     return (
-        <div>
+        <div style={{widht: "60%"}}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs centered onChange={handleChange} value={value}>
                     <Tab label='Edges editor' />
