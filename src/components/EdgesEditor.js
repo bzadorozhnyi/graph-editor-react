@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import EdgeInput from "./EdgeInput";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from '@mui/material';
+import customDeepCopy from "../customDeepCopy";
 
 class EdgesEditor extends Component {
     state = {
@@ -22,7 +23,7 @@ class EdgesEditor extends Component {
     };
     handleEdgeDelete = (deletedEdgeId) => {
         let { elements, styles } = this.props;
-        elements = JSON.parse(JSON.stringify(elements));
+        elements = customDeepCopy(elements);
 
         // remove old data from elements
         this.removeOldData(
@@ -39,10 +40,6 @@ class EdgesEditor extends Component {
         this.setState({ edgeInputs });
         this.props.setElements({ ...elements });
         this.props.setStyles({ ...styles });
-
-        // console.log({edgeInputs});
-        // console.log({elements});
-        // console.log({styles});
     };
     handleEdgeChange = (changedEdgeId, property, newValue) => {
         let changedEdge = this.state.edgeInputs.find(
@@ -51,7 +48,7 @@ class EdgesEditor extends Component {
         let { id, source, target, label } = changedEdge;
 
         let { elements, styles } = this.props;
-        elements = JSON.parse(JSON.stringify(elements));
+        elements = customDeepCopy(elements);
 
         function addNode(name) {
             // if node not exist => set number of it to 0

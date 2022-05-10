@@ -1,27 +1,19 @@
 import './App.css';
 import stylesheet from './stylesheet.json';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import cytoscape from 'cytoscape';
 import CytoscapeComponent from 'react-cytoscapejs';
 import { saveAs } from 'file-saver';
 import UserMenu from './components/UserMenu';
 import Button from '@mui/material/Button';
+import customDeepCopy from './customDeepCopy';
 
 function concatNodesAndEdges(elements) {
   const {nodes, edges} = elements;
   return nodes.concat(edges);
 }
 
-function copyObject(x) {
-  return JSON.parse(JSON.stringify(x));
-}
-
 function App() {
-  // set title
-  useEffect(() => {
-    document.title = "Graph Editor";  
-  }, []);
-
   // handle graph events and data memorization 
   const cyRef = useRef(cytoscape({ /* options */ }));
   const [tappedNodeId, setTappedNodeId] = useState('');
@@ -44,63 +36,70 @@ function App() {
   cyRef.current.on('tap', 'node', (event) => {
     let newTappedNodeId = event.target.id();
     if(elements.isNodeStyleCopyActive) {
-      // copy style from tapped node to previous tapped node 
-      styles.nodes[tappedNodeId] = typeof styles.nodes[newTappedNodeId] === 'undefined' ? {} : copyObject(styles.nodes[newTappedNodeId]);
+      // copy style from tapped node to previous tapped node
+      styles.nodes[tappedNodeId] = typeof styles.nodes[newTappedNodeId] === 'undefined' ? {} : styles.nodes[newTappedNodeId];
 
       // update data in elements
-      let newElements = JSON.parse(JSON.stringify(elements));
+      let newElements = customDeepCopy(elements);
       let tappedNode = newElements.nodes.find(node => node.data.id === tappedNodeId);
-      tappedNode.data = { id: tappedNodeId, label: tappedNodeId, ...copyObject(styles.nodes[tappedNodeId]) };
+      tappedNode.data = { id: tappedNodeId, label: tappedNodeId, ...styles.nodes[tappedNodeId] };
 
       // reset node's (copy button icon) props
       newElements.isNodeStyleCopyActive = false;
 
-      setElements({...newElements});
+      setElements(newElements);
       setStyles({...styles})
     }
     else {
       setTappedNodeId(newTappedNodeId);
     }
   });
+
+  cyRef.current.removeListener('remove', 'node');
   cyRef.current.on('remove', 'node', (event) => {
     let node = event.target;
     delete styles.nodes[node.id()];
+
     if(node.id() === tappedNodeId) {
       setTappedNodeId('');
     }
     if(elements.isNodeStyleCopyActive) {
       elements.isNodeStyleCopyActive = false;
-      setElements({...elements});
+      setElements(customDeepCopy(elements));
     }
-    setStyles({...styles});
+    setStyles(customDeepCopy(styles));
   });
 
+  cyRef.current.removeListener('tap', 'edge');
   cyRef.current.on('tap', 'edge', (event) => {
     let newTappedEdgeId = event.target.id();
     if(elements.isEdgeStyleCopyActive) {
-      // copy style from tapped edge to previous tapped edge 
-      styles.edges[tappedEdgeId] = typeof styles.edges[newTappedEdgeId] === 'undefined' ? {} : copyObject(styles.edges[newTappedEdgeId]);
+      // copy style from tapped edge to previous tapped edge
+      // let newStyles = customDeepCopy(styles)
+      styles.edges[tappedEdgeId] = typeof styles.edges[newTappedEdgeId] === 'undefined' ? {} : styles.edges[newTappedEdgeId];
       
       // update data in elements
-      let newElements = JSON.parse(JSON.stringify(elements));
+      let newElements = customDeepCopy(elements);
       let tappedEdge = newElements.edges.find(edge => edge.data.id === tappedEdgeId);
       tappedEdge.data = { id: tappedEdgeId, label: tappedEdge.data.label, ...styles.edges[tappedEdgeId] };
 
       // reset edge's (copy button icon) props
       newElements.isEdgeStyleCopyActive = false;
-
-      setElements({...newElements});
-      setStyles({...styles})
+      
+      setElements(newElements);
+      setStyles({...styles});
     }
     else {
       setTappedEdgeId(newTappedEdgeId);
     }
   });
+
+  cyRef.current.removeListener('remove', 'edge');
   cyRef.current.on('remove', 'edge', (event) => {
     // update and (set empty) of tappedEdgeId implemented in EdgesEditor
     if(elements.isEdgeStyleCopyActive) {
       elements.isEdgeStyleCopyActive = false;
-      setElements({...elements});
+      setElements(customDeepCopy(elements));
     }
   });
 

@@ -1,6 +1,7 @@
 import CopyStyleButton from './CopyStyleButton';
 import { ColorPicker, createColor } from "material-ui-color";
 import { Slider, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import customDeepCopy from '../customDeepCopy';
 
 function EdgeEditor(props) {
     let {elements, setElements, setStyles, styles, tappedEdgeId} = props;
@@ -45,7 +46,7 @@ function EdgeEditor(props) {
                                 // need to set current color with opacity in ColorPicker
                                 styles.edges[tappedEdgeId].colorAndOPacity = value;
 
-                                let newElements = JSON.parse(JSON.stringify(elements));
+                                let newElements = customDeepCopy(elements);
                                 let tappedEdge = newElements.edges.find(edge => edge.data.id === tappedEdgeId);
 
                                 tappedEdge.data.color = newColor;
@@ -69,7 +70,7 @@ function EdgeEditor(props) {
                                     }
                                     styles.edges[tappedEdgeId].width = value;
 
-                                    let newElements = JSON.parse(JSON.stringify(elements));
+                                    let newElements = customDeepCopy(elements);
                                     let tappedEdge = newElements.edges.find(edge => edge.data.id === tappedEdgeId);
                                     
                                     tappedEdge.data.width = value;
@@ -95,7 +96,7 @@ function EdgeEditor(props) {
                                 }
                                 styles.edges[tappedEdgeId].lineStyle = value;
 
-                                let newElements = JSON.parse(JSON.stringify(elements));
+                                let newElements = customDeepCopy(elements);
                                 let tappedEdge = newElements.edges.find(edge => edge.data.id === tappedEdgeId);
 
                                 tappedEdge.data.lineStyle = value;
@@ -132,7 +133,7 @@ function EdgeEditor(props) {
                                 //need to set text color in ColorPicker
                                 styles.edges[tappedEdgeId].textColorPicker = value;
 
-                                let newElements = JSON.parse(JSON.stringify(elements));
+                                let newElements = customDeepCopy(elements);
                                 let tappedEdge = newElements.edges.find(edge => edge.data.id === tappedEdgeId);
 
                                 tappedEdge.data.labelColor = newColor;
@@ -155,7 +156,7 @@ function EdgeEditor(props) {
                                     
                                     styles.edges[tappedEdgeId].fontSize = value;
 
-                                    let newElements = JSON.parse(JSON.stringify(elements));
+                                    let newElements = customDeepCopy(elements);
                                     let tappedEdge = newElements.edges.find(x => x.data.id === tappedEdgeId);
 
                                     tappedEdge.data.fontSize = value;
@@ -186,7 +187,7 @@ function EdgeEditor(props) {
                                         
                                         styles.edges[tappedEdgeId].marginX = value;
 
-                                        let newElements = JSON.parse(JSON.stringify(elements));
+                                        let newElements = customDeepCopy(elements);
                                         let tappedEdge = newElements.edges.find(x => x.data.id === tappedEdgeId);
 
                                         tappedEdge.data.marginX = value;
@@ -215,7 +216,7 @@ function EdgeEditor(props) {
                                         
                                         styles.edges[tappedEdgeId].marginY = value;
 
-                                        let newElements = JSON.parse(JSON.stringify(elements));
+                                        let newElements = customDeepCopy(elements);
                                         let tappedEdge = newElements.edges.find(x => x.data.id === tappedEdgeId);
 
                                         tappedEdge.data.marginY = value;

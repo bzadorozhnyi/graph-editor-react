@@ -1,6 +1,7 @@
 import CopyStyleButton from './CopyStyleButton';
 import { ColorPicker, createColor } from 'material-ui-color';
 import { Slider } from '@mui/material';
+import customDeepCopy from "../customDeepCopy";
 
 function NodeEditor(props) {
     let { elements, tappedNodeId, setElements, setStyles, styles } = props;
@@ -45,7 +46,7 @@ function NodeEditor(props) {
                                 // need to set current color with opacity in ColorPicker
                                 styles.nodes[tappedNodeId].backgroundColorAndOpacity = value;
 
-                                let newElements = JSON.parse(JSON.stringify(elements));
+                                let newElements = customDeepCopy(elements);
                                 let tappedNode = newElements.nodes.find(node => node.data.id === tappedNodeId);
 
                                 tappedNode.data.backgroundColor = newColor;
@@ -69,7 +70,7 @@ function NodeEditor(props) {
                                     }
                                     styles.nodes[tappedNodeId].size = value;
                                     
-                                    let newElements = JSON.parse(JSON.stringify(elements));
+                                    let newElements = customDeepCopy(elements);
                                     newElements.nodes.find(x => x.data.id === tappedNodeId).data.size = value;
 
                                     setElements(newElements);
@@ -103,7 +104,7 @@ function NodeEditor(props) {
                                 //need to set text color in ColorPicker
                                 styles.nodes[tappedNodeId].textColorPicker = value;
 
-                                let newElements = JSON.parse(JSON.stringify(elements));
+                                let newElements = customDeepCopy(elements);
                                 let tappedNode = newElements.nodes.find(x => x.data.id === tappedNodeId);
 
                                 tappedNode.data.color = newColor;
@@ -127,7 +128,7 @@ function NodeEditor(props) {
                                     
                                     styles.nodes[tappedNodeId].fontSize = newFontSize;
 
-                                    let newElements = JSON.parse(JSON.stringify(elements));
+                                    let newElements = customDeepCopy(elements);
                                     let tappedNode = newElements.nodes.find(x => x.data.id === tappedNodeId);
 
                                     tappedNode.data.fontSize = newFontSize;
@@ -163,7 +164,7 @@ function NodeEditor(props) {
                                 //need to set border color in ColorPicker
                                 styles.nodes[tappedNodeId].borderColorPicker = value;
 
-                                let newElements = JSON.parse(JSON.stringify(elements));
+                                let newElements = customDeepCopy(elements);
                                 let tappedNode = newElements.nodes.find(x => x.data.id === tappedNodeId);
 
                                 tappedNode.data.borderColor = newColor;
@@ -186,7 +187,7 @@ function NodeEditor(props) {
                                     }
                                     styles.nodes[tappedNodeId].borderWidth = value;
                                     
-                                    let newElements = JSON.parse(JSON.stringify(elements));
+                                    let newElements = customDeepCopy(elements);
                                     newElements.nodes.find(x => x.data.id === tappedNodeId).data.borderWidth = value;
 
                                     setElements(newElements);
