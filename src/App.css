@@ -35,7 +35,7 @@ body {
 .edges-editor {
   height: 100%;
   overflow-y: scroll;
-  padding: 10px;
+  padding: 5px;
   position: relative;
   width: inherit;
 }
@@ -43,13 +43,13 @@ body {
 .edge-input {
   background-color: white;
   border-radius: 6px;
-  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
   justify-content: space-around;
-  height: 70px;
-  margin: 5px;
+  height: 75px;
+  margin: 7px -5px 7px;
 }
 
 .edges-list {
+  display: grid;
   padding: 5px;
 }
 
@@ -100,16 +100,25 @@ body {
 
 /* panel */
 
-#addEdgeButton {
-  background-color: white;
+#addEdgePanel {
+  background-color: rgb(229, 244, 248);
   border-radius: 6px;
   display: flex;
-  justify-self: center;
+  justify-content: space-between;
+  align-items: center;
   height: 60px;
   position: sticky;
-  top: 0px;
+  top: 5px;
   width: 100%;
   z-index: 10;
+}
+
+#addEdgePanel p {
+  color: #1976d2;
+  font-family: "Roboto","Helvetica","Arial","sans-serif";
+  font-size: 20px;
+  font-weight: 700;
+  padding: 5px;
 }
 
 /* scrollbar */

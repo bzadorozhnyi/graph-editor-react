@@ -3,6 +3,7 @@ import EdgeInput from "./EdgeInput";
 import { v4 as uuidv4 } from "uuid";
 import { Button } from '@mui/material';
 import customDeepCopy from "../customDeepCopy";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 class EdgesEditor extends Component {
     state = {
@@ -263,22 +264,60 @@ class EdgesEditor extends Component {
         }
     };
 
+    onDragEnd = (result) => {
+        console.log(this.state)
+        if(!result.destination) {
+            return;
+        }
+        
+        console.log(result.source.index, result.destination.index);
+        
+        const items = Array.from(this.state.edgeInputs);
+        const [reorderedEdgeInputs] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedEdgeInputs);
+        
+        console.log(items);
+
+        this.setState({edgeInputs: items});
+    };
+
     render() {
         return (
             <div className='edges-editor panel'>
-                <div id="addEdgeButton">
+                <div id="addEdgePanel">
                     <Button onClick={this.addEdge}>Add edge</Button>
+                    <p>
+                        You can drag and drop edge`s inputs.    
+                    </p>
                 </div>
-                <div className='edges-list'>
-                        {this.state.edgeInputs.map((edgeInput) => (
-                            <EdgeInput
-                                edge={edgeInput}
-                                key={edgeInput.edgeInputId}
-                                onChange={this.handleEdgeChange}
-                                onDelete={this.handleEdgeDelete}
-                            />
-                        ))}
-                </div>
+                <DragDropContext onDragEnd={this.onDragEnd}>
+                    <Droppable droppableId="edges-list">
+                        {(provided) => (
+                            <div className='edges-list' {...provided.droppableProps} ref={provided.innerRef}>
+                                {this.state.edgeInputs.map((edgeInput, index) => {
+                                    return (
+                                        <Draggable key={edgeInput.edgeInputId+'-id'} draggableId={edgeInput.edgeInputId+'-id'} index={index}>
+                                            {(provided) => (
+                                                <div
+                                                    ref={provided.innerRef}
+                                                    {...provided.draggableProps}
+                                                    {...provided.dragHandleProps}>
+                                                    <EdgeInput
+                                                        edge={edgeInput}
+                                                        key={edgeInput.edgeInputId}
+                                                        onChange={this.handleEdgeChange}
+                                                        onDelete={this.handleEdgeDelete}
+                                                    />
+                                                </div>
+                                            )}
+                                        </Draggable>
+                                    );
+                                })}
+                                {provided.placeholder}
+                            </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
             </div>
         );
     }
