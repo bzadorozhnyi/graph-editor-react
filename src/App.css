@@ -56,11 +56,14 @@ body {
 /* style-editor */
 
 .style-editor {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
   height: 100%;
   width: inherit;
 }
 
-.style-editor h1 {
+.style-editor.panel div h1 {
   text-align: center;
 }
 

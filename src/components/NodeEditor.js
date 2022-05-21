@@ -10,16 +10,16 @@ function NodeEditor(props) {
 
     return (
         <div className="style-editor panel">
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <div style={{flexGrow: '1'}}>
-                    <h1>{ tappedNodeId === '' ? 'Node not selected' : tappedNodeId }</h1>
+            <div>
+                <h1>{ tappedNodeId === '' ? 'Node not selected' : tappedNodeId }</h1>
+                <div style={{position: 'absolute', top: '85px', zIndex: '100'}}>
+                    <CopyStyleButton
+                        elements={elements}
+                        isActiveCopy={elements.isNodeStyleCopyActive}
+                        setElements={setElements}
+                        type='node'
+                    />
                 </div>
-                <CopyStyleButton
-                    elements={elements}
-                    isActiveCopy={elements.isNodeStyleCopyActive}
-                    setElements={setElements}
-                    type='node'
-                />
             </div>
 
             <div className='panel'>

@@ -10,16 +10,16 @@ function EdgeEditor(props) {
 
     return (
         <div className='style-editor panel'>
-            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
-                <div style={{flexGrow: '1'}}>
-                    <h1>{ tappedEdgeId === '' ? 'Edge not selected' : tappedEdgeId }</h1>
+            <div>
+                <h1>{ tappedEdgeId === '' ? 'Edge not selected' : tappedEdgeId }</h1>
+                <div style={{position: 'absolute', top: '95px', zIndex: '100'}}>
+                    <CopyStyleButton
+                        elements={elements}
+                        isActiveCopy={elements.isEdgeStyleCopyActive}
+                        setElements={setElements}
+                        type='edge'
+                    />
                 </div>
-                <CopyStyleButton
-                    elements={elements}
-                    isActiveCopy={elements.isEdgeStyleCopyActive}
-                    setElements={setElements}
-                    type='edge'
-                />
             </div>
 
             <div className='panel'>

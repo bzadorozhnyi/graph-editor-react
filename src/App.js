@@ -8,8 +8,30 @@ import UserMenu from './components/UserMenu';
 import Button from '@mui/material/Button';
 import customDeepCopy from './customDeepCopy';
 
+const DEFAULT_NODE_STYLE = {
+  "backgroundColor": "#808080",
+  "borderColor": "black",
+  "borderWidth": "1",
+  "color": "black",
+  "fontSize": "18",
+  "opacity": "1",
+  "size": "48"
+}
+
+const DEFAULT_EDGE_STYLE = {
+  "arrow": "none",
+  "color": "#808080",
+  "fontSize": "18",
+  "labelColor": "black",
+  "lineStyle": "solid",
+  "marginX": "0",
+  "marginY": "0",
+  "opacity": 1,
+  "width": 1
+}
+
 function concatNodesAndEdges(elements) {
-  const {nodes, edges} = elements;
+  const { nodes, edges } = elements;
   return nodes.concat(edges);
 }
 
@@ -35,9 +57,11 @@ function App() {
   cyRef.current.removeListener('tap');
   cyRef.current.on('tap', 'node', (event) => {
     let newTappedNodeId = event.target.id();
-    if(elements.isNodeStyleCopyActive) {
+    if (elements.isNodeStyleCopyActive) {
       // copy style from tapped node to previous tapped node
-      styles.nodes[tappedNodeId] = typeof styles.nodes[newTappedNodeId] === 'undefined' ? {} : styles.nodes[newTappedNodeId];
+      styles.nodes[tappedNodeId] = typeof styles.nodes[newTappedNodeId] === 'undefined'
+        ? customDeepCopy(DEFAULT_NODE_STYLE)
+        : customDeepCopy(styles.nodes[newTappedNodeId]);
 
       // update data in elements
       let newElements = customDeepCopy(elements);
@@ -48,7 +72,7 @@ function App() {
       newElements.isNodeStyleCopyActive = false;
 
       setElements(newElements);
-      setStyles({...styles})
+      setStyles({ ...styles })
     }
     else {
       setTappedNodeId(newTappedNodeId);
@@ -60,10 +84,10 @@ function App() {
     let node = event.target;
     delete styles.nodes[node.id()];
 
-    if(node.id() === tappedNodeId) {
+    if (node.id() === tappedNodeId) {
       setTappedNodeId('');
     }
-    if(elements.isNodeStyleCopyActive) {
+    if (elements.isNodeStyleCopyActive) {
       elements.isNodeStyleCopyActive = false;
       setElements(customDeepCopy(elements));
     }
@@ -73,10 +97,14 @@ function App() {
   cyRef.current.removeListener('tap', 'edge');
   cyRef.current.on('tap', 'edge', (event) => {
     let newTappedEdgeId = event.target.id();
-    if(elements.isEdgeStyleCopyActive) {
+    if (elements.isEdgeStyleCopyActive) {
       // copy style from tapped edge to previous tapped edge
-      // let newStyles = customDeepCopy(styles)
-      styles.edges[tappedEdgeId] = typeof styles.edges[newTappedEdgeId] === 'undefined' ? {} : styles.edges[newTappedEdgeId];
+      let isDirected = styles.edges[tappedEdgeId] !== 'none';
+      styles.edges[tappedEdgeId] = typeof styles.edges[newTappedEdgeId] === 'undefined'
+        ? customDeepCopy(DEFAULT_EDGE_STYLE)
+        : customDeepCopy(styles.edges[newTappedEdgeId]);
+
+      styles.edges[tappedEdgeId].arrow = isDirected ? 'triangle' : 'none';
       
       // update data in elements
       let newElements = customDeepCopy(elements);
@@ -85,9 +113,9 @@ function App() {
 
       // reset edge's (copy button icon) props
       newElements.isEdgeStyleCopyActive = false;
-      
+
       setElements(newElements);
-      setStyles({...styles});
+      setStyles({ ...styles });
     }
     else {
       setTappedEdgeId(newTappedEdgeId);
@@ -97,7 +125,7 @@ function App() {
   cyRef.current.removeListener('remove', 'edge');
   cyRef.current.on('remove', 'edge', (event) => {
     // update and (set empty) of tappedEdgeId implemented in EdgesEditor
-    if(elements.isEdgeStyleCopyActive) {
+    if (elements.isEdgeStyleCopyActive) {
       elements.isEdgeStyleCopyActive = false;
       setElements(customDeepCopy(elements));
     }
@@ -120,7 +148,7 @@ function App() {
           cy={(cy) => { cyRef.current = cy; }}
         />
 
-        <div style={{"width": "60%"}}>
+        <div style={{ "width": "60%" }}>
           <UserMenu
             elements={elements}
             setElements={setElements}
