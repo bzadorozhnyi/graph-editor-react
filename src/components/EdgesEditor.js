@@ -53,11 +53,11 @@ class EdgesEditor extends Component {
 
         function addNode(name) {
             // if node not exist => set number of it to 0
-            if (!(name in elements.dictOfNodes)) {
-                elements.dictOfNodes[name] = 0;
+            if (!(name in elements.numberOfNodes)) {
+                elements.numberOfNodes[name] = 0;
             }
             // if node appear => add to graph`s nodes
-            if (name !== "" && ++elements.dictOfNodes[name] === 1) {
+            if (name !== "" && ++elements.numberOfNodes[name] === 1) {
                 elements.nodes.push(
                     name in styles.nodes
                         ? { data: { id: name, label: name, ...styles.nodes[name], }, }
@@ -109,8 +109,8 @@ class EdgesEditor extends Component {
                     }
                 } else {
                     // remove source node if need
-                    if (--elements.dictOfNodes[oldValue] === 0) {
-                        delete elements.dictOfNodes[oldValue];
+                    if (--elements.numberOfNodes[oldValue] === 0) {
+                        delete elements.numberOfNodes[oldValue];
                         delete styles.nodes[oldValue];
                         elements.nodes = elements.nodes.filter(
                             (node) => node.data.id !== oldValue
@@ -177,8 +177,8 @@ class EdgesEditor extends Component {
                     }
                 } else {
                     // remove target node if need
-                    if (--elements.dictOfNodes[oldValue] === 0) {
-                        delete elements.dictOfNodes[oldValue];
+                    if (--elements.numberOfNodes[oldValue] === 0) {
+                        delete elements.numberOfNodes[oldValue];
                         delete styles.nodes[oldValue];
                         elements.nodes = elements.nodes.filter(
                             (node) => node.data.id !== oldValue
@@ -236,15 +236,15 @@ class EdgesEditor extends Component {
         const { id, source, target } = removedEdge;
 
         // remove not existed nodes
-        if (source !== "" && --elements.dictOfNodes[source] === 0) {
-            delete elements.dictOfNodes[source];
+        if (source !== "" && --elements.numberOfNodes[source] === 0) {
+            delete elements.numberOfNodes[source];
             delete styles.nodes[source];
             elements.nodes = elements.nodes.filter(
                 (node) => node.data.id !== source
             );
         }
-        if (target !== "" && --elements.dictOfNodes[target] === 0) {
-            delete elements.dictOfNodes[target];
+        if (target !== "" && --elements.numberOfNodes[target] === 0) {
+            delete elements.numberOfNodes[target];
             delete styles.nodes[target];
             elements.nodes = elements.nodes.filter(
                 (node) => node.data.id !== target

@@ -19,7 +19,6 @@ const DEFAULT_NODE_STYLE = {
 }
 
 const DEFAULT_EDGE_STYLE = {
-  "arrow": "none",
   "color": "#808080",
   "fontSize": "18",
   "labelColor": "black",
@@ -42,7 +41,7 @@ function App() {
   const [tappedEdgeId, setTappedEdgeId] = useState('');
 
   const [elements, setElements] = useState({
-    dictOfNodes: {},
+    numberOfNodes: {},
     nodes: [],
     edges: []
   });
@@ -66,7 +65,11 @@ function App() {
       // update data in elements
       let newElements = customDeepCopy(elements);
       let tappedNode = newElements.nodes.find(node => node.data.id === tappedNodeId);
-      tappedNode.data = { id: tappedNodeId, label: tappedNodeId, ...styles.nodes[tappedNodeId] };
+      tappedNode.data = {
+        id: tappedNodeId,
+        label: tappedNodeId,
+        ...styles.nodes[tappedNodeId]
+      };
 
       // reset node's (copy button icon) props
       newElements.isNodeStyleCopyActive = false;
@@ -99,17 +102,23 @@ function App() {
     let newTappedEdgeId = event.target.id();
     if (elements.isEdgeStyleCopyActive) {
       // copy style from tapped edge to previous tapped edge
-      let isDirected = styles.edges[tappedEdgeId] !== 'none';
-      styles.edges[tappedEdgeId] = typeof styles.edges[newTappedEdgeId] === 'undefined'
-        ? customDeepCopy(DEFAULT_EDGE_STYLE)
-        : customDeepCopy(styles.edges[newTappedEdgeId]);
-
-      styles.edges[tappedEdgeId].arrow = isDirected ? 'triangle' : 'none';
+      let newEdgeStyle = customDeepCopy(DEFAULT_EDGE_STYLE);
+      for (let property in styles.edges[newTappedEdgeId]) {
+        newEdgeStyle[property] = customDeepCopy(styles.edges[newTappedEdgeId][property]);
+      }
+      styles.edges[tappedEdgeId] = newEdgeStyle;
       
       // update data in elements
       let newElements = customDeepCopy(elements);
       let tappedEdge = newElements.edges.find(edge => edge.data.id === tappedEdgeId);
-      tappedEdge.data = { id: tappedEdgeId, label: tappedEdge.data.label, ...styles.edges[tappedEdgeId] };
+      let isDirected = tappedEdge.data.arrow === 'triangle';
+      
+      tappedEdge.data = {
+        id: tappedEdgeId,
+        label: tappedEdge.data.label,
+        arrow: isDirected ? 'triangle' : 'none',
+        ...styles.edges[tappedEdgeId]
+      };
 
       // reset edge's (copy button icon) props
       newElements.isEdgeStyleCopyActive = false;
