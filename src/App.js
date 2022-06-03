@@ -8,23 +8,13 @@ import UserMenu from './components/UserMenu';
 import Button from '@mui/material/Button';
 import customDeepCopy from './customDeepCopy';
 
-const DEFAULT_NODE_STYLE = {
-  "backgroundColor": "#808080",
-  "borderColor": "black",
-  "borderWidth": "1",
-  "color": "black",
-  "fontSize": "18",
-  "opacity": "1",
-  "size": "48"
-}
-
 const DEFAULT_EDGE_STYLE = {
   "color": "#808080",
-  "fontSize": "18",
+  "labelSize": 18,
   "labelColor": "black",
   "lineStyle": "solid",
-  "marginX": "0",
-  "marginY": "0",
+  "marginX": 0,
+  "marginY": 0,
   "opacity": 1,
   "width": 1
 }
@@ -43,39 +33,37 @@ function App() {
   const [elements, setElements] = useState({
     numberOfNodes: {},
     nodes: [],
-    edges: []
+    edges: [],
+    isActiveCopy: {
+      edge: false,
+      node: false
+    }
   });
 
   const [styles, setStyles] = useState({
     edges: {},
     nodes: {},
     isEdgeStyleCopyActive: false,
-    isNodeStyleCopyActive: false,
   });
 
   cyRef.current.removeListener('tap');
   cyRef.current.on('tap', 'node', (event) => {
     let newTappedNodeId = event.target.id();
-    if (elements.isNodeStyleCopyActive) {
-      // copy style from tapped node to previous tapped node
-      styles.nodes[tappedNodeId] = typeof styles.nodes[newTappedNodeId] === 'undefined'
-        ? customDeepCopy(DEFAULT_NODE_STYLE)
-        : customDeepCopy(styles.nodes[newTappedNodeId]);
-
+    if (elements.isActiveCopy.node) {
       // update data in elements
-      let newElements = customDeepCopy(elements);
-      let tappedNode = newElements.nodes.find(node => node.data.id === tappedNodeId);
-      tappedNode.data = {
+      let tappedNodeIndex = elements.nodes.findIndex(node => node.data.id === tappedNodeId);
+      let newTappedNode = elements.nodes.find(node => node.data.id === newTappedNodeId).data;
+
+      elements.nodes[tappedNodeIndex].data = {
+        ...newTappedNode,
         id: tappedNodeId,
         label: tappedNodeId,
-        ...styles.nodes[tappedNodeId]
       };
 
       // reset node's (copy button icon) props
-      newElements.isNodeStyleCopyActive = false;
+      elements.isActiveCopy.node = false;
 
-      setElements(newElements);
-      setStyles({ ...styles })
+      setElements(customDeepCopy(elements));
     }
     else {
       setTappedNodeId(newTappedNodeId);
@@ -84,17 +72,13 @@ function App() {
 
   cyRef.current.removeListener('remove', 'node');
   cyRef.current.on('remove', 'node', (event) => {
-    let node = event.target;
-    delete styles.nodes[node.id()];
-
-    if (node.id() === tappedNodeId) {
+    if (event.target.id() === tappedNodeId) {
       setTappedNodeId('');
     }
-    if (elements.isNodeStyleCopyActive) {
-      elements.isNodeStyleCopyActive = false;
+    if (elements.isActiveCopy.node) {
+      elements.isActiveCopy.node = false;
       setElements(customDeepCopy(elements));
     }
-    setStyles(customDeepCopy(styles));
   });
 
   cyRef.current.removeListener('tap', 'edge');

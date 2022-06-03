@@ -1,21 +1,23 @@
 import CopyStyleButton from './CopyStyleButton';
-import { ColorPicker, createColor } from 'material-ui-color';
+import { ColorPicker } from 'material-ui-color';
 import { Slider } from '@mui/material';
 import customDeepCopy from "../customDeepCopy";
+import { BLACK, GRAY, EMPTY_NODE } from '../constants';
 
 function NodeEditor(props) {
-    let { elements, tappedNodeId, setElements, setStyles, styles } = props;
-    let grayColor = createColor('#808080');
-    let blackColor = createColor('black');
+    let { elements, tappedNodeId, setElements } = props;
+
+    const tappedNode = tappedNodeId !== ''
+        ? elements.nodes.find(node => node.data.id === tappedNodeId).data
+        : customDeepCopy(EMPTY_NODE.data);
 
     return (
         <div className="style-editor panel">
             <div>
-                <h1>{ tappedNodeId === '' ? 'Node not selected' : tappedNodeId }</h1>
-                <div style={{position: 'absolute', top: '85px', zIndex: '100'}}>
+                <h1>{tappedNode.label}</h1>
+                <div style={{ position: 'absolute', top: '85px', zIndex: '100' }}>
                     <CopyStyleButton
                         elements={elements}
-                        isActiveCopy={elements.isNodeStyleCopyActive}
                         setElements={setElements}
                         type='node'
                     />
@@ -27,58 +29,38 @@ function NodeEditor(props) {
                 <hr></hr>
                 <div className='menu-control'>
                     <ColorPicker
-                        defaultValue={grayColor}
+                        defaultValue={GRAY}
                         hideTextfield
                         onChange={(value) => {
                             if (tappedNodeId !== '') {
-                                if (!(tappedNodeId in styles.nodes)) {
-                                    styles.nodes[tappedNodeId] = {};
-                                }
-                                
                                 let newColor = value.css.backgroundColor.substring(0, 7);
                                 let newOpacity = value.alpha;
 
                                 // base on user`s input set background and opacity
                                 // P.S. if newColor.length === 5 cause warnings, maybe should be fixed in future
-                                styles.nodes[tappedNodeId].backgroundColor = (value.hasOwnProperty('error') ? 'transparent' : newColor);
-                                styles.nodes[tappedNodeId].opacity = (value.hasOwnProperty('error') ? 0 : newOpacity);
-                                
+                                tappedNode.nodeColor = (value.hasOwnProperty('error') ? 'transparent' : newColor);
+                                tappedNode.nodeOpacity = (value.hasOwnProperty('error') ? 0 : newOpacity);
+
                                 // need to set current color with opacity in ColorPicker
-                                styles.nodes[tappedNodeId].backgroundColorAndOpacity = value;
-
-                                let newElements = customDeepCopy(elements);
-                                let tappedNode = newElements.nodes.find(node => node.data.id === tappedNodeId);
-
-                                tappedNode.data.backgroundColor = newColor;
-                                tappedNode.data.opacity = newOpacity;
-
-                                setElements(newElements);
-                                setStyles(styles);
+                                tappedNode.nodeColorPicker = value;
+                                setElements(customDeepCopy(elements));
                             }
                         }}
-                        value={(tappedNodeId in styles.nodes) && (styles.nodes[tappedNodeId].hasOwnProperty('backgroundColorAndOpacity')) ? styles.nodes[tappedNodeId].backgroundColorAndOpacity : grayColor}
+                        value={tappedNode.nodeColorPicker}
                     />
                     <div className='slider-wrapper'>
                         <Slider
                             marks
                             max={100}
                             min={50}
-                            onChange={(event, value) => {
+                            onChange={(_, value) => {
                                 if (tappedNodeId !== '') {
-                                    if (!(tappedNodeId in styles.nodes)) {
-                                        styles.nodes[tappedNodeId] = {};
-                                    }
-                                    styles.nodes[tappedNodeId].size = value;
-                                    
-                                    let newElements = customDeepCopy(elements);
-                                    newElements.nodes.find(x => x.data.id === tappedNodeId).data.size = value;
-
-                                    setElements(newElements);
-                                    setStyles(styles);
+                                    tappedNode.nodeSize = value;
+                                    setElements(customDeepCopy(elements));
                                 }
                             }}
                             step={10}
-                            value={(tappedNodeId in styles.nodes) ? styles.nodes[tappedNodeId].size : 50} // set node`s size
+                            value={tappedNode.nodeSize}
                             valueLabelDisplay="auto"
                         />
                     </div>
@@ -90,55 +72,33 @@ function NodeEditor(props) {
                 <hr></hr>
                 <div className='menu-control'>
                     <ColorPicker
-                        defaultValue={grayColor}
+                        defaultValue={BLACK}
                         disableAlpha
                         hideTextfield
                         onChange={(value) => {
                             if (tappedNodeId !== '') {
-                                if (!(tappedNodeId in styles.nodes)) {
-                                    styles.nodes[tappedNodeId] = {};
-                                }
-                                
                                 let newColor = value.css.backgroundColor;
-                                styles.nodes[tappedNodeId].color = (value.hasOwnProperty('error') ? 'black' : newColor);
+                                tappedNode.labelColor = (value.hasOwnProperty('error') ? 'black' : newColor);
                                 //need to set text color in ColorPicker
-                                styles.nodes[tappedNodeId].textColorPicker = value;
-
-                                let newElements = customDeepCopy(elements);
-                                let tappedNode = newElements.nodes.find(x => x.data.id === tappedNodeId);
-
-                                tappedNode.data.color = newColor;
-
-                                setElements(newElements);
-                                setStyles(styles);
+                                tappedNode.labelColorPicker = value;
+                                setElements(customDeepCopy(elements));
                             }
                         }}
-                        value={(tappedNodeId in styles.nodes) && (styles.nodes[tappedNodeId].hasOwnProperty('textColorPicker')) ? styles.nodes[tappedNodeId].textColorPicker : blackColor}
+                        value={tappedNode.labelColorPicker}
                     />
                     <div className='slider-wrapper'>
                         <Slider
                             max={45}
                             min={15}
                             onChange={(event) => {
-                                let newFontSize = Number(event.target.value);
+                                let newLabelSize = Number(event.target.value);
                                 if (tappedNodeId !== '') {
-                                    if (!(tappedNodeId in styles.nodes)) {
-                                        styles.nodes[tappedNodeId] = {};
-                                    }
-                                    
-                                    styles.nodes[tappedNodeId].fontSize = newFontSize;
-
-                                    let newElements = customDeepCopy(elements);
-                                    let tappedNode = newElements.nodes.find(x => x.data.id === tappedNodeId);
-
-                                    tappedNode.data.fontSize = newFontSize;
-
-                                    setElements(newElements);
-                                    setStyles(styles);
+                                    tappedNode.labelSize = newLabelSize;
+                                    setElements(customDeepCopy(elements));
                                 }
                             }}
                             step={5}
-                            value={tappedNodeId in styles.nodes && styles.nodes[tappedNodeId].hasOwnProperty('fontSize') ? styles.nodes[tappedNodeId].fontSize : 18}
+                            value={tappedNode.labelSize}
                             valueLabelDisplay="auto"
                         />
                     </div>
@@ -150,52 +110,33 @@ function NodeEditor(props) {
                 <hr></hr>
                 <div className='menu-control'>
                     <ColorPicker
-                        defaultValue={'black'}
+                        defaultValue={BLACK}
                         disableAlpha
                         hideTextfield
                         onChange={(value) => {
                             if (tappedNodeId !== '') {
-                                if (!(tappedNodeId in styles.nodes)) {
-                                    styles.nodes[tappedNodeId] = {};
-                                }
-                                
                                 let newColor = value.css.backgroundColor;
-                                styles.nodes[tappedNodeId].borderColor = (value.hasOwnProperty('error') ? 'black' : newColor);
+                                tappedNode.borderColor = (value.hasOwnProperty('error') ? 'black' : newColor);
                                 //need to set border color in ColorPicker
-                                styles.nodes[tappedNodeId].borderColorPicker = value;
-
-                                let newElements = customDeepCopy(elements);
-                                let tappedNode = newElements.nodes.find(x => x.data.id === tappedNodeId);
-
-                                tappedNode.data.borderColor = newColor;
-
-                                setElements(newElements);
-                                setStyles(styles);
+                                tappedNode.borderColorPicker = value;
+                                setElements(customDeepCopy(elements));
                             }
                         }}
-                        value={(tappedNodeId in styles.nodes) && (styles.nodes[tappedNodeId].hasOwnProperty('borderColorPicker')) ? styles.nodes[tappedNodeId].borderColorPicker : blackColor}
+                        value={tappedNode.borderColorPicker}
                     />
                     <div className='slider-wrapper'>
                         <Slider
                             marks
                             max={10}
                             min={0}
-                            onChange={(event, value) => {
+                            onChange={(_, value) => {
                                 if (tappedNodeId !== '') {
-                                    if (!(tappedNodeId in styles.nodes)) {
-                                        styles.nodes[tappedNodeId] = {};
-                                    }
-                                    styles.nodes[tappedNodeId].borderWidth = value;
-                                    
-                                    let newElements = customDeepCopy(elements);
-                                    newElements.nodes.find(x => x.data.id === tappedNodeId).data.borderWidth = value;
-
-                                    setElements(newElements);
-                                    setStyles(styles);
+                                    tappedNode.borderWidth = value;
+                                    setElements(customDeepCopy(elements));
                                 }
                             }}
                             step={1}
-                            value={tappedNodeId in styles.nodes && styles.nodes[tappedNodeId].hasOwnProperty('borderWidth') ? styles.nodes[tappedNodeId].borderWidth : 1}
+                            value={tappedNode.borderWidth}
                             valueLabelDisplay="auto"
                         />
                     </div>

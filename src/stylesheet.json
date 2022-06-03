@@ -15,14 +15,14 @@
             "font-size": "18px",
             "font-weight": "800",
 
-            "height": "48",
-            "width": "48"
+            "height": "50",
+            "width": "50"
         }
     },
     {
-        "selector": "node[backgroundColor]",
+        "selector": "node[nodeColor]",
         "style": {
-            "background-color": "data(backgroundColor)"
+            "background-color": "data(nodeColor)"
         }
     },
     {
@@ -38,28 +38,28 @@
         }
     },
     {
-        "selector": "node[color]",
+        "selector": "node[labelColor]",
         "style": {
-            "color": "data(color)"
+            "color": "data(labelColor)"
         }
     },
     {
-        "selector": "node[fontSize]",
+        "selector": "node[labelSize]",
         "style": {
-            "font-size": "data(fontSize)"
+            "font-size": "data(labelSize)"
         }
     },
     {
-        "selector": "node[opacity]",
+        "selector": "node[nodeOpacity]",
         "style": {
-            "background-opacity": "data(opacity)"
+            "background-opacity": "data(nodeOpacity)"
         }
     },
     {
-        "selector": "node[size]",
+        "selector": "node[nodeSize]",
         "style": {
-            "height": "data(size)",
-            "width": "data(size)"
+            "height": "data(nodeSize)",
+            "width": "data(nodeSize)"
         }
     },
     {
@@ -94,9 +94,9 @@
         }
     },
     {
-        "selector": "edge[fontSize]",
+        "selector": "edge[labelSize]",
         "style": {
-            "font-size": "data(fontSize)"
+            "font-size": "data(labelSize)"
         }
     },
     {

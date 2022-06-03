@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Button } from '@mui/material';
 import customDeepCopy from "../customDeepCopy";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DEFAULT_NODE_STYLE, DEFAULT_EDGE_STYLE } from "../constants";
 
 class EdgesEditor extends Component {
     state = {
@@ -22,6 +23,7 @@ class EdgesEditor extends Component {
         });
         this.setState({ ...edgeInputs });
     };
+
     handleEdgeDelete = (deletedEdgeId) => {
         let { elements, styles } = this.props;
         elements = customDeepCopy(elements);
@@ -42,6 +44,7 @@ class EdgesEditor extends Component {
         this.props.setElements({ ...elements });
         this.props.setStyles({ ...styles });
     };
+
     handleEdgeChange = (changedEdgeId, property, newValue) => {
         let changedEdge = this.state.edgeInputs.find(
             (edge) => edge.id === changedEdgeId
@@ -58,11 +61,8 @@ class EdgesEditor extends Component {
             }
             // if node appear => add to graph`s nodes
             if (name !== "" && ++elements.numberOfNodes[name] === 1) {
-                elements.nodes.push(
-                    name in styles.nodes
-                        ? { data: { id: name, label: name, ...styles.nodes[name], }, }
-                        : { data: { id: name, label: name } }
-                );
+                styles.nodes[name] = customDeepCopy(DEFAULT_NODE_STYLE);
+                elements.nodes.push({ data: { id: name, label: name, ...styles.nodes[name] } });
             }
         }
 
@@ -82,7 +82,7 @@ class EdgesEditor extends Component {
                 }
                 break;
             case "label":
-                if(source !== '' && target !== '') {
+                if (source !== '' && target !== '') {
                     let currentEdge = elements.edges.find(edge => edge.data.id === id);
                     currentEdge.data.label = newValue;
                 }
@@ -145,12 +145,12 @@ class EdgesEditor extends Component {
                         });
 
                         // if current edge is tapped => set new id of tapped edge
-                        if(id === this.props.tappedEdgeId) {
+                        if (id === this.props.tappedEdgeId) {
                             this.props.setTappedEdgeId(changedEdge.id);
                         }
                     }
                     // if cannot add edge and current edge is tapped => update tappedEdgeId
-                    else if(id === this.props.tappedEdgeId) { 
+                    else if (id === this.props.tappedEdgeId) {
                         this.props.setTappedEdgeId('');
                     }
                 }
@@ -213,12 +213,12 @@ class EdgesEditor extends Component {
                         });
 
                         // if current edge is tapped => set new id of tapped edge
-                        if(id === this.props.tappedEdgeId) {
+                        if (id === this.props.tappedEdgeId) {
                             this.props.setTappedEdgeId(changedEdge.id);
                         }
                     }
                     // if cannot add edge and current edge is tapped => update tappedEdgeId
-                    else if(id === this.props.tappedEdgeId) { 
+                    else if (id === this.props.tappedEdgeId) {
                         this.props.setTappedEdgeId('');
                     }
                 }
@@ -255,7 +255,7 @@ class EdgesEditor extends Component {
         if (source !== "" && target !== "") {
             delete styles.edges[id];
             // if removed edge is tapped => set tappedEdgeId as empty
-            if(id === this.props.tappedEdgeId) {
+            if (id === this.props.tappedEdgeId) {
                 this.props.setTappedEdgeId('');
             }
             elements.edges = elements.edges.filter(
@@ -265,20 +265,15 @@ class EdgesEditor extends Component {
     };
 
     onDragEnd = (result) => {
-        console.log(this.state)
-        if(!result.destination) {
+        if (!result.destination) {
             return;
         }
-        
-        console.log(result.source.index, result.destination.index);
-        
+
         const items = Array.from(this.state.edgeInputs);
         const [reorderedEdgeInputs] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedEdgeInputs);
-        
-        console.log(items);
 
-        this.setState({edgeInputs: items});
+        this.setState({ edgeInputs: items });
     };
 
     render() {
@@ -287,7 +282,7 @@ class EdgesEditor extends Component {
                 <div id="addEdgePanel">
                     <Button onClick={this.addEdge}>Add edge</Button>
                     <p>
-                        You can drag and drop edge`s inputs.    
+                        You can drag and drop edge`s inputs.
                     </p>
                 </div>
                 <DragDropContext onDragEnd={this.onDragEnd}>
@@ -296,7 +291,7 @@ class EdgesEditor extends Component {
                             <div className='edges-list' {...provided.droppableProps} ref={provided.innerRef}>
                                 {this.state.edgeInputs.map((edgeInput, index) => {
                                     return (
-                                        <Draggable key={edgeInput.edgeInputId+'-id'} draggableId={edgeInput.edgeInputId+'-id'} index={index}>
+                                        <Draggable key={edgeInput.edgeInputId + '-id'} draggableId={edgeInput.edgeInputId + '-id'} index={index}>
                                             {(provided) => (
                                                 <div
                                                     ref={provided.innerRef}

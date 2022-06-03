@@ -1,24 +1,24 @@
 import CancelIcon from '@mui/icons-material/Cancel';
 import ColorizeIcon from '@mui/icons-material/Colorize';
 import IconButton from '@mui/material/IconButton';
+import customDeepCopy from '../customDeepCopy';
 
 function CopyStyleButton(props) {
-    let { elements, setElements, isActiveCopy, type } = props;
+    let { elements, setElements, type } = props;
 
     return (
         <IconButton
             onClick={() => {
-                if(type === 'node') {
-                    elements.isNodeStyleCopyActive = !isActiveCopy;
-                }
-                if(type === 'edge') {
-                    elements.isEdgeStyleCopyActive = !isActiveCopy;
-                }
-                setElements({...elements});
+                elements.isActiveCopy[type] = !elements.isActiveCopy[type];
+                setElements(customDeepCopy(elements));
             }}
             size='large'
         >
-            {isActiveCopy ? <CancelIcon fontSize="inherit" /> : <ColorizeIcon fontSize="inherit" />}
+            {
+                elements.isActiveCopy[type]
+                    ? <CancelIcon fontSize="inherit" />
+                    : <ColorizeIcon labelSize="inherit" />
+            }
         </IconButton>
     );
 }
