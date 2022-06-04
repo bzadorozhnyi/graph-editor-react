@@ -26,6 +26,19 @@
         }
     },
     {
+        "selector": "node[nodeOpacity]",
+        "style": {
+            "background-opacity": "data(nodeOpacity)"
+        }
+    },
+    {
+        "selector": "node[nodeSize]",
+        "style": {
+            "height": "data(nodeSize)",
+            "width": "data(nodeSize)"
+        }
+    },
+    {
         "selector": "node[borderColor]",
         "style": {
             "border-color": "data(borderColor)"
@@ -50,19 +63,6 @@
         }
     },
     {
-        "selector": "node[nodeOpacity]",
-        "style": {
-            "background-opacity": "data(nodeOpacity)"
-        }
-    },
-    {
-        "selector": "node[nodeSize]",
-        "style": {
-            "height": "data(nodeSize)",
-            "width": "data(nodeSize)"
-        }
-    },
-    {
         "selector": "edge",
         "style": {
             "curve-style": "bezier",
@@ -75,52 +75,40 @@
         }
     },
     {
-        "selector": "edge[label]",
-        "style": {
-            "label": "data(label)"
-        }
-    },
-    {
         "selector": "edge[arrow]",
         "style": {
             "target-arrow-shape": "data(arrow)"
         }
     },
     {
-        "selector": "edge[color]",
+        "selector": "edge[edgeColor]",
         "style": {
-            "line-color": "data(color)",
-            "target-arrow-color": "data(color)"
+            "line-color": "data(edgeColor)",
+            "target-arrow-color": "data(edgeColor)"
         }
     },
     {
-        "selector": "edge[labelSize]",
+        "selector": "edge[edgeLineStyle]",
         "style": {
-            "font-size": "data(labelSize)"
+            "line-style": "data(edgeLineStyle)"
         }
     },
     {
-        "selector": "edge[lineStyle]",
+        "selector": "edge[edgeOpacity]",
         "style": {
-            "line-style": "data(lineStyle)"
+            "line-opacity": "data(edgeOpacity)"
         }
     },
     {
-        "selector": "edge[marginX]",
+        "selector": "edge[edgeWidth]",
         "style": {
-            "text-margin-x": "data(marginX)"
+            "width": "data(edgeWidth)"
         }
     },
     {
-        "selector": "edge[marginY]",
+        "selector": "edge[label]",
         "style": {
-            "text-margin-y": "data(marginY)"
-        }
-    },
-    {
-        "selector": "edge[opacity]",
-        "style": {
-            "line-opacity": "data(opacity)"
+            "label": "data(label)"
         }
     },
     {
@@ -130,9 +118,21 @@
         }
     },
     {
-        "selector": "edge[width]",
+        "selector": "edge[labelMarginX]",
         "style": {
-            "width": "data(width)"
+            "text-margin-x": "data(labelMarginX)"
+        }
+    },
+    {
+        "selector": "edge[labelMarginY]",
+        "style": {
+            "text-margin-y": "data(labelMarginY)"
+        }
+    },
+    {
+        "selector": "edge[labelSize]",
+        "style": {
+            "font-size": "data(labelSize)"
         }
     }
 ]

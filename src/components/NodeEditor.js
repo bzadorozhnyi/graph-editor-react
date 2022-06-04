@@ -2,14 +2,14 @@ import CopyStyleButton from './CopyStyleButton';
 import { ColorPicker } from 'material-ui-color';
 import { Slider } from '@mui/material';
 import customDeepCopy from "../customDeepCopy";
-import { BLACK, GRAY, EMPTY_NODE } from '../constants';
+import { BLACK, GRAY, DEFAULT_NODE } from '../constants';
 
 function NodeEditor(props) {
     let { elements, tappedNodeId, setElements } = props;
 
     const tappedNode = tappedNodeId !== ''
         ? elements.nodes.find(node => node.data.id === tappedNodeId).data
-        : customDeepCopy(EMPTY_NODE.data);
+        : customDeepCopy(DEFAULT_NODE.data);
 
     return (
         <div className="style-editor panel">

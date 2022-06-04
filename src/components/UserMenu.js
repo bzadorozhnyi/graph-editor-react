@@ -10,7 +10,7 @@ export default function UserMenu(props) {
         setValue(value);
     };
     return (
-        <div style={{widht: "60%"}}>
+        <div style={{ widht: "60%" }}>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                 <Tabs centered onChange={handleChange} value={value}>
                     <Tab label='Edges editor' />
@@ -22,10 +22,7 @@ export default function UserMenu(props) {
                 <EdgesEditor
                     elements={props.elements}
                     setElements={props.setElements}
-                    setStyles={props.setStyles}
                     setTappedEdgeId={props.setTappedEdgeId}
-                    styles={props.styles}
-                    tappedEdgeId={props.tappedEdgeId}
                 />
             </TabPanel>
             <TabPanel value={value} index={1}>
@@ -33,16 +30,12 @@ export default function UserMenu(props) {
                     elements={props.elements}
                     tappedNodeId={props.tappedNodeId}
                     setElements={props.setElements}
-                    setStyles={props.setStyles}
-                    styles={props.styles}
                 />
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <EdgeEditor
                     elements={props.elements}
                     setElements={props.setElements}
-                    setStyles={props.setStyles}
-                    styles={props.styles}
                     tappedEdgeId={props.tappedEdgeId}
                 />
             </TabPanel>
@@ -51,5 +44,5 @@ export default function UserMenu(props) {
 }
 
 function TabPanel(props) {
-    return <div style={{height: '635px'}} hidden={props.value !== props.index}>{props.children}</div>;
+    return <div style={{ height: '635px' }} hidden={props.value !== props.index}>{props.children}</div>;
 }

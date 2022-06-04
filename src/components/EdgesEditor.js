@@ -25,14 +25,13 @@ class EdgesEditor extends Component {
     };
 
     handleEdgeDelete = (deletedEdgeId) => {
-        let { elements, styles } = this.props;
+        let { elements } = this.props;
         elements = customDeepCopy(elements);
 
         // remove old data from elements
         this.removeOldData(
             this.state.edgeInputs.find((edge) => edge.id === deletedEdgeId),
-            elements,
-            styles
+            elements
         );
 
         // remove edge input
@@ -42,7 +41,6 @@ class EdgesEditor extends Component {
 
         this.setState({ edgeInputs });
         this.props.setElements({ ...elements });
-        this.props.setStyles({ ...styles });
     };
 
     handleEdgeChange = (changedEdgeId, property, newValue) => {
@@ -51,7 +49,7 @@ class EdgesEditor extends Component {
         );
         let { id, source, target, label } = changedEdge;
 
-        let { elements, styles } = this.props;
+        let { elements } = this.props;
         elements = customDeepCopy(elements);
 
         function addNode(name) {
@@ -61,8 +59,12 @@ class EdgesEditor extends Component {
             }
             // if node appear => add to graph`s nodes
             if (name !== "" && ++elements.numberOfNodes[name] === 1) {
-                styles.nodes[name] = customDeepCopy(DEFAULT_NODE_STYLE);
-                elements.nodes.push({ data: { id: name, label: name, ...styles.nodes[name] } });
+                elements.nodes.push({
+                    data: {
+                        id: name,
+                        label: name,
+                        ...customDeepCopy(DEFAULT_NODE_STYLE)
+                    }});
             }
         }
 
@@ -103,15 +105,15 @@ class EdgesEditor extends Component {
                                 id: changedEdge.id,
                                 source: newValue,
                                 target: target,
-                                label: label
-                            },
+                                label: label,
+                                ...customDeepCopy(DEFAULT_EDGE_STYLE)
+                            }
                         });
                     }
                 } else {
                     // remove source node if need
                     if (--elements.numberOfNodes[oldValue] === 0) {
                         delete elements.numberOfNodes[oldValue];
-                        delete styles.nodes[oldValue];
                         elements.nodes = elements.nodes.filter(
                             (node) => node.data.id !== oldValue
                         );
@@ -119,8 +121,7 @@ class EdgesEditor extends Component {
                     // add new node if need
                     addNode(newValue);
 
-                    // set current edge style
-                    let edgeStyle = id in styles.edges ? styles.edges[id] : {};
+                    let oldEdge = elements.edges.find(edge => edge.data.id === id).data;
 
                     // remove old edge
                     elements.edges = elements.edges.filter((edge) => edge.data.id !== id);
@@ -128,20 +129,17 @@ class EdgesEditor extends Component {
                     // set new edge id
                     changedEdge.id = uuidv4();
 
-                    // set new edge style as current
-                    styles.edges[changedEdge.id] = edgeStyle;
-
                     // add new edge if it`s possible
                     if (newValue !== "" && target !== "") {
                         elements.edges.push({
                             data: {
+                                ...customDeepCopy(oldEdge),
                                 arrow: changedEdge.directed ? "triangle" : "none",
                                 id: changedEdge.id,
                                 source: newValue,
                                 target: target,
-                                label: label,
-                                ...edgeStyle
-                            },
+                                label: label
+                            }
                         });
 
                         // if current edge is tapped => set new id of tapped edge
@@ -171,15 +169,15 @@ class EdgesEditor extends Component {
                                 id: changedEdge.id,
                                 source: source,
                                 target: newValue,
-                                label: label
-                            },
+                                label: label,
+                                ...customDeepCopy(DEFAULT_EDGE_STYLE)
+                            }
                         });
                     }
                 } else {
                     // remove target node if need
                     if (--elements.numberOfNodes[oldValue] === 0) {
                         delete elements.numberOfNodes[oldValue];
-                        delete styles.nodes[oldValue];
                         elements.nodes = elements.nodes.filter(
                             (node) => node.data.id !== oldValue
                         );
@@ -187,8 +185,7 @@ class EdgesEditor extends Component {
                     // add new node if need
                     addNode(newValue);
 
-                    // set current edge style
-                    let edgeStyle = id in styles.edges ? styles.edges[id] : {};
+                    let oldEdge = elements.edges.find(edge => edge.data.id === id).data;
 
                     // remove old edge
                     elements.edges = elements.edges.filter((edge) => edge.data.id !== id);
@@ -196,20 +193,17 @@ class EdgesEditor extends Component {
                     // set new edge id
                     changedEdge.id = uuidv4();
 
-                    // set new edge style as current
-                    styles.edges[changedEdge.id] = edgeStyle;
-
                     // add new edge if it`s possible
                     if (newValue !== "" && target !== "") {
                         elements.edges.push({
                             data: {
+                                ...customDeepCopy(oldEdge),
                                 arrow: changedEdge.directed ? "triangle" : "none",
                                 id: changedEdge.id,
-                                source: source,
-                                target: newValue,
-                                label: label,
-                                ...edgeStyle
-                            },
+                                source: newValue,
+                                target: target,
+                                label: label
+                            }
                         });
 
                         // if current edge is tapped => set new id of tapped edge
@@ -229,23 +223,20 @@ class EdgesEditor extends Component {
 
         this.setState({ ...this.state.edgeInputs });
         this.props.setElements({ ...elements });
-        this.props.setStyles({ ...styles });
     };
 
-    removeOldData = (removedEdge, elements, styles) => {
+    removeOldData = (removedEdge, elements) => {
         const { id, source, target } = removedEdge;
 
         // remove not existed nodes
         if (source !== "" && --elements.numberOfNodes[source] === 0) {
             delete elements.numberOfNodes[source];
-            delete styles.nodes[source];
             elements.nodes = elements.nodes.filter(
                 (node) => node.data.id !== source
             );
         }
         if (target !== "" && --elements.numberOfNodes[target] === 0) {
             delete elements.numberOfNodes[target];
-            delete styles.nodes[target];
             elements.nodes = elements.nodes.filter(
                 (node) => node.data.id !== target
             );
@@ -253,7 +244,6 @@ class EdgesEditor extends Component {
 
         // remove edge
         if (source !== "" && target !== "") {
-            delete styles.edges[id];
             // if removed edge is tapped => set tappedEdgeId as empty
             if (id === this.props.tappedEdgeId) {
                 this.props.setTappedEdgeId('');

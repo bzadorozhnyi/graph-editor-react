@@ -8,17 +8,6 @@ import UserMenu from './components/UserMenu';
 import Button from '@mui/material/Button';
 import customDeepCopy from './customDeepCopy';
 
-const DEFAULT_EDGE_STYLE = {
-  "color": "#808080",
-  "labelSize": 18,
-  "labelColor": "black",
-  "lineStyle": "solid",
-  "marginX": 0,
-  "marginY": 0,
-  "opacity": 1,
-  "width": 1
-}
-
 function concatNodesAndEdges(elements) {
   const { nodes, edges } = elements;
   return nodes.concat(edges);
@@ -38,12 +27,6 @@ function App() {
       edge: false,
       node: false
     }
-  });
-
-  const [styles, setStyles] = useState({
-    edges: {},
-    nodes: {},
-    isEdgeStyleCopyActive: false,
   });
 
   cyRef.current.removeListener('tap');
@@ -84,31 +67,25 @@ function App() {
   cyRef.current.removeListener('tap', 'edge');
   cyRef.current.on('tap', 'edge', (event) => {
     let newTappedEdgeId = event.target.id();
-    if (elements.isEdgeStyleCopyActive) {
-      // copy style from tapped edge to previous tapped edge
-      let newEdgeStyle = customDeepCopy(DEFAULT_EDGE_STYLE);
-      for (let property in styles.edges[newTappedEdgeId]) {
-        newEdgeStyle[property] = customDeepCopy(styles.edges[newTappedEdgeId][property]);
-      }
-      styles.edges[tappedEdgeId] = newEdgeStyle;
-      
+    if (elements.isActiveCopy.edge) {
       // update data in elements
-      let newElements = customDeepCopy(elements);
-      let tappedEdge = newElements.edges.find(edge => edge.data.id === tappedEdgeId);
-      let isDirected = tappedEdge.data.arrow === 'triangle';
+      let tappedEdgeIndex = elements.edges.findIndex(edge => edge.data.id === tappedEdgeId);
+      let tappedEdge = elements.edges.find(edge => edge.data.id === tappedEdgeId).data;
+      let newTappedEdge = elements.edges.find(edge => edge.data.id === newTappedEdgeId).data;
       
-      tappedEdge.data = {
-        id: tappedEdgeId,
-        label: tappedEdge.data.label,
-        arrow: isDirected ? 'triangle' : 'none',
-        ...styles.edges[tappedEdgeId]
+      elements.edges[tappedEdgeIndex].data = {
+        ...customDeepCopy(newTappedEdge),
+        arrow: tappedEdge.arrow,
+        id: tappedEdge.id,
+        source: tappedEdge.source,
+        target: tappedEdge.target,
+        label: tappedEdge.label,
       };
 
       // reset edge's (copy button icon) props
-      newElements.isEdgeStyleCopyActive = false;
+      elements.isActiveCopy.edge = false;
 
-      setElements(newElements);
-      setStyles({ ...styles });
+      setElements(customDeepCopy(elements));
     }
     else {
       setTappedEdgeId(newTappedEdgeId);
@@ -116,10 +93,10 @@ function App() {
   });
 
   cyRef.current.removeListener('remove', 'edge');
-  cyRef.current.on('remove', 'edge', (event) => {
+  cyRef.current.on('remove', 'edge', (_) => {
     // update and (set empty) of tappedEdgeId implemented in EdgesEditor
-    if (elements.isEdgeStyleCopyActive) {
-      elements.isEdgeStyleCopyActive = false;
+    if (elements.isActiveCopy.edge) {
+      elements.isActiveCopy.edge = false;
       setElements(customDeepCopy(elements));
     }
   });
@@ -145,9 +122,7 @@ function App() {
           <UserMenu
             elements={elements}
             setElements={setElements}
-            setStyles={setStyles}
             setTappedEdgeId={setTappedEdgeId}
-            styles={styles}
             tappedEdgeId={tappedEdgeId}
             tappedNodeId={tappedNodeId}
           />

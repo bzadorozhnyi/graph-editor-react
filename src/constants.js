@@ -4,19 +4,19 @@ const GRAY = createColor('#808080');
 const BLACK = createColor('black');
 
 const DEFAULT_NODE_STYLE = {
-    nodeColor: "#808080",
+    nodeColor: '#808080',
     nodeColorPicker: GRAY,
     nodeOpacity: 1,
     nodeSize: 48,
-    borderColor: "black",
+    borderColor: 'black',
     borderColorPicker: BLACK,
     borderWidth: 1,
-    labelColor: "black",
+    labelColor: 'black',
     labelColorPicker: BLACK,
     labelSize: 18
 };
 
-const EMPTY_NODE = {
+const DEFAULT_NODE = {
     data: {
         id: '',
         label: 'Node not selected',
@@ -25,7 +25,27 @@ const EMPTY_NODE = {
 }
 
 const DEFAULT_EDGE_STYLE = {
-    color: "black"
+    edgeColor: '#808080',
+    edgeColorPicker: GRAY,
+    edgeLineStyle: 'solid',
+    edgeOpacity: 1,
+    edgeWidth: 1,
+    labelColor: 'black',
+    labelColorPicker: BLACK,
+    labelSize: 18,
+    labelMarginX: 0,
+    labelMarginY: 0
 }
 
-export { BLACK, GRAY, DEFAULT_NODE_STYLE, EMPTY_NODE, DEFAULT_EDGE_STYLE };
+const DEFAULT_EDGE = {
+    data: {
+        arrow: 'none',
+        id: 'Edge not selected',
+        source: '',
+        target: '',
+        label: '',
+        ...DEFAULT_EDGE_STYLE
+    }
+}
+
+export { BLACK, GRAY, DEFAULT_NODE_STYLE, DEFAULT_NODE, DEFAULT_EDGE_STYLE, DEFAULT_EDGE };
