@@ -249,8 +249,8 @@ class EdgesEditor extends Component {
                                 ...customDeepCopy(oldEdge),
                                 arrow: changedEdge.directed ? "triangle" : "none",
                                 id: changedEdge.id,
-                                source: newValue,
-                                target: target,
+                                source: source,
+                                target: newValue,
                                 label: label
                             }
                         });
