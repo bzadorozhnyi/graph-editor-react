@@ -135,3 +135,21 @@ body {
 }
 
 /* scroolbar */
+
+#addListBlock {
+  color: #1976d2;
+  font-family: "Roboto","Helvetica","Arial","sans-serif";
+  font-weight: 700;
+}
+
+#textEdgeInputs {
+  display: none;
+}
+
+#addListBlock:hover + #textEdgeInputs {
+  display: block;
+}
+
+#textEdgeInputs:hover {
+  display: block;
+}

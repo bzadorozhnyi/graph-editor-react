@@ -5,6 +5,7 @@ import { Button } from '@mui/material';
 import customDeepCopy from "../customDeepCopy";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import { DEFAULT_NODE_STYLE, DEFAULT_EDGE_STYLE } from "../constants";
+import TextEdgeInputs from "./TextEdgeInputs";
 
 class EdgesEditor extends Component {
     state = {
@@ -23,6 +24,53 @@ class EdgesEditor extends Component {
         });
         this.setState({ ...edgeInputs });
     };
+
+    handleTextAdding = (textEdges, setTextEdges) => {
+        let {elements, setElements} = this.props;
+        let edgeInputs = this.state.edgeInputs;
+
+        textEdges.split('\n').forEach(row => {
+            let [source, target, ...label] = row.trim().split(/\s+/);
+
+            if(source) {
+                if(target === undefined) {
+                    target = '';
+                }
+                label = label.join(' ');
+
+                let newEdgeInput = {
+                    directed: false,
+                    edgeInputId: uuidv4(),
+                    id: uuidv4(),
+                    source: source,
+                    target: target,
+                    label: label
+                };
+
+                this.addNode(source);
+                this.addNode(target);
+
+                if(target !== '') {
+                    elements.edges.push({
+                        data: {
+                            arrow: "none",
+                            id: newEdgeInput.id,
+                            source: source,
+                            target: target,
+                            label: label,
+                            ...customDeepCopy(DEFAULT_EDGE_STYLE)
+                        }
+                    });
+                }
+
+                edgeInputs.push(newEdgeInput);
+            }
+        });
+
+        setElements(customDeepCopy(elements));
+        this.setState({ ...edgeInputs });
+        setTextEdges('');
+    }
 
     handleEdgeDelete = (deletedEdgeId) => {
         let { elements } = this.props;
@@ -43,6 +91,24 @@ class EdgesEditor extends Component {
         this.props.setElements({ ...elements });
     };
 
+    addNode = (name) => {
+        const { elements } = this.props;
+        // if node not exist => set number of it to 0
+        if (!(name in elements.numberOfNodes)) {
+            elements.numberOfNodes[name] = 0;
+        }
+        // if node appear => add to graph`s nodes
+        if (name !== "" && ++elements.numberOfNodes[name] === 1) {
+            elements.nodes.push({
+                data: {
+                    id: name,
+                    label: name,
+                    ...customDeepCopy(DEFAULT_NODE_STYLE)
+                }
+            });
+        }
+    }
+
     handleEdgeChange = (changedEdgeId, property, newValue) => {
         let changedEdge = this.state.edgeInputs.find(
             (edge) => edge.id === changedEdgeId
@@ -50,23 +116,6 @@ class EdgesEditor extends Component {
         let { id, source, target, label } = changedEdge;
 
         let { elements } = this.props;
-        elements = customDeepCopy(elements);
-
-        function addNode(name) {
-            // if node not exist => set number of it to 0
-            if (!(name in elements.numberOfNodes)) {
-                elements.numberOfNodes[name] = 0;
-            }
-            // if node appear => add to graph`s nodes
-            if (name !== "" && ++elements.numberOfNodes[name] === 1) {
-                elements.nodes.push({
-                    data: {
-                        id: name,
-                        label: name,
-                        ...customDeepCopy(DEFAULT_NODE_STYLE)
-                    }});
-            }
-        }
 
         // update inputs
         let oldValue = changedEdge[property];
@@ -92,7 +141,7 @@ class EdgesEditor extends Component {
             case "source":
                 if (oldValue === "") {
                     // add new node if need
-                    addNode(newValue);
+                    this.addNode(newValue);
 
                     // set new edge id
                     changedEdge.id = uuidv4();
@@ -119,7 +168,7 @@ class EdgesEditor extends Component {
                         );
                     }
                     // add new node if need
-                    addNode(newValue);
+                    this.addNode(newValue);
 
                     let oldEdge = elements.edges.find(edge => edge.data.id === id).data;
 
@@ -156,7 +205,7 @@ class EdgesEditor extends Component {
             case "target":
                 if (oldValue === "") {
                     // add new node if need
-                    addNode(newValue);
+                    this.addNode(newValue);
 
                     // set new edge id
                     changedEdge.id = uuidv4();
@@ -183,7 +232,7 @@ class EdgesEditor extends Component {
                         );
                     }
                     // add new node if need
-                    addNode(newValue);
+                    this.addNode(newValue);
 
                     let oldEdge = elements.edges.find(edge => edge.data.id === id).data;
 
@@ -222,7 +271,7 @@ class EdgesEditor extends Component {
         }
 
         this.setState({ ...this.state.edgeInputs });
-        this.props.setElements({ ...elements });
+        this.props.setElements(customDeepCopy(elements));
     };
 
     removeOldData = (removedEdge, elements) => {
@@ -271,6 +320,7 @@ class EdgesEditor extends Component {
             <div className='edges-editor panel'>
                 <div id="addEdgePanel">
                     <Button onClick={this.addEdge}>Add edge</Button>
+                    <TextEdgeInputs onAdd={this.handleTextAdding}/>
                     <p>
                         You can drag and drop edge`s inputs.
                     </p>

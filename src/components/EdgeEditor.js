@@ -11,8 +11,6 @@ function EdgeEditor(props) {
         ? elements.edges.find(edge => edge.data.id === tappedEdgeId).data
         : customDeepCopy(DEFAULT_EDGE.data);
 
-    console.log(tappedEdge);
-
     return (
         <div className='style-editor panel'>
             <div>

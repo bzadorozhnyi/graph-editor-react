@@ -41,6 +41,7 @@ class EdgeInput extends Component {
                         )
                     }
                     size='small'
+                    value={this.props.edge.label}
                     variant='filled'
                 />
                 <FormControlLabel
