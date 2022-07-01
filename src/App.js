@@ -7,73 +7,74 @@ import { saveAs } from 'file-saver';
 import UserMenu from './components/UserMenu';
 import Button from '@mui/material/Button';
 import customDeepCopy from './customDeepCopy';
-
-function concatNodesAndEdges(elements) {
-  const { nodes, edges } = elements;
-  return nodes.concat(edges);
-}
+import { EMPTY_FRAME } from './constants';
 
 function App() {
   // handle graph events and data memorization 
   const cyRef = useRef(cytoscape({ /* options */ }));
-  const [tappedNodeId, setTappedNodeId] = useState('');
-  const [tappedEdgeId, setTappedEdgeId] = useState('');
 
-  const [elements, setElements] = useState({
-    numberOfNodes: {},
-    nodes: [],
-    edges: [],
-    isActiveCopy: {
-      edge: false,
-      node: false
-    }
-  });
+  function getPNG() {
+    return cyRef.current.png({
+      bg: 'white'
+    });
+  }
+
+  const [frames, setFrames] = useState([customDeepCopy(EMPTY_FRAME)]);
+  const [selectedFrameIndex, setSelectedFrameIndex] = useState(0);
 
   cyRef.current.removeListener('tap');
   cyRef.current.on('tap', 'node', (event) => {
     let newTappedNodeId = event.target.id();
-    if (elements.isActiveCopy.node) {
+    if (frames[selectedFrameIndex].elements.isActiveCopy.node) {
       // update data in elements
-      let tappedNodeIndex = elements.nodes.findIndex(node => node.data.id === tappedNodeId);
-      let newTappedNode = elements.nodes.find(node => node.data.id === newTappedNodeId).data;
+      let tappedNodeIndex = frames[selectedFrameIndex].elements.nodes.findIndex(node => node.data.id === frames[selectedFrameIndex].elements.tappedNodeId);
+      let newTappedNode = frames[selectedFrameIndex].elements.nodes.find(node => node.data.id === newTappedNodeId).data;
 
-      elements.nodes[tappedNodeIndex].data = {
+      frames[selectedFrameIndex].elements.nodes[tappedNodeIndex].data = {
         ...newTappedNode,
-        id: tappedNodeId,
-        label: tappedNodeId,
+        id: frames[selectedFrameIndex].elements.tappedNodeId,
+        label: frames[selectedFrameIndex].elements.tappedNodeId,
       };
 
       // reset node's (copy button icon) props
-      elements.isActiveCopy.node = false;
+      frames[selectedFrameIndex].elements.isActiveCopy.node = false;
 
-      setElements(customDeepCopy(elements));
+      setFrames(customDeepCopy(frames));
     }
     else {
-      setTappedNodeId(newTappedNodeId);
+      frames[selectedFrameIndex].elements.tappedNodeId = newTappedNodeId;
+      setFrames(customDeepCopy(frames));
     }
   });
 
   cyRef.current.removeListener('remove', 'node');
-  cyRef.current.on('remove', 'node', (event) => {
-    if (event.target.id() === tappedNodeId) {
-      setTappedNodeId('');
-    }
-    if (elements.isActiveCopy.node) {
-      elements.isActiveCopy.node = false;
-      setElements(customDeepCopy(elements));
+  cyRef.current.on('remove', 'node', (_) => {
+    // update and (set empty) of tappedNodeId implemented in EdgesEditor
+    if (frames[selectedFrameIndex].elements.isActiveCopy.node) {
+      frames[selectedFrameIndex].elements.isActiveCopy.node = false;
+      setFrames(customDeepCopy(frames));
     }
   });
+
+  cyRef.current.removeListener('dragfree', 'node');
+  cyRef.current.on('dragfree', 'node', (event) => {
+    let graggedNodeId = event.target._private.data.id;
+    let newPosition = cyRef.current.$id(graggedNodeId).position();
+    let draggedNode = frames[selectedFrameIndex].elements.nodes.find(node => node.data.id === graggedNodeId);
+    draggedNode.position = newPosition;
+    setFrames(customDeepCopy(frames));
+  })
 
   cyRef.current.removeListener('tap', 'edge');
   cyRef.current.on('tap', 'edge', (event) => {
     let newTappedEdgeId = event.target.id();
-    if (elements.isActiveCopy.edge) {
+    if (frames[selectedFrameIndex].elements.isActiveCopy.edge) {
       // update data in elements
-      let tappedEdgeIndex = elements.edges.findIndex(edge => edge.data.id === tappedEdgeId);
-      let tappedEdge = elements.edges.find(edge => edge.data.id === tappedEdgeId).data;
-      let newTappedEdge = elements.edges.find(edge => edge.data.id === newTappedEdgeId).data;
+      let tappedEdgeIndex = frames[selectedFrameIndex].elements.edges.findIndex(edge => edge.data.id === frames[selectedFrameIndex].elements.tappedEdgeId);
+      let tappedEdge = frames[selectedFrameIndex].elements.edges.find(edge => edge.data.id === frames[selectedFrameIndex].elements.tappedEdgeId).data;
+      let newTappedEdge = frames[selectedFrameIndex].elements.edges.find(edge => edge.data.id === newTappedEdgeId).data;
       
-      elements.edges[tappedEdgeIndex].data = {
+      frames[selectedFrameIndex].elements.edges[tappedEdgeIndex].data = {
         ...customDeepCopy(newTappedEdge),
         arrow: tappedEdge.arrow,
         id: tappedEdge.id,
@@ -83,21 +84,22 @@ function App() {
       };
 
       // reset edge's (copy button icon) props
-      elements.isActiveCopy.edge = false;
+      frames[selectedFrameIndex].elements.isActiveCopy.edge = false;
 
-      setElements(customDeepCopy(elements));
+      setFrames(customDeepCopy(frames));
     }
     else {
-      setTappedEdgeId(newTappedEdgeId);
+      frames[selectedFrameIndex].elements.tappedEdgeId = newTappedEdgeId;
+      setFrames(customDeepCopy(frames));
     }
   });
 
   cyRef.current.removeListener('remove', 'edge');
   cyRef.current.on('remove', 'edge', (_) => {
     // update and (set empty) of tappedEdgeId implemented in EdgesEditor
-    if (elements.isActiveCopy.edge) {
-      elements.isActiveCopy.edge = false;
-      setElements(customDeepCopy(elements));
+    if (frames[selectedFrameIndex].elements.isActiveCopy.edge) {
+      frames[selectedFrameIndex].elements.isActiveCopy.edge = false;
+      setFrames(customDeepCopy(frames));
     }
   });
 
@@ -106,7 +108,10 @@ function App() {
       <div className="graph-wrapper">
         <CytoscapeComponent
           autounselectify
-          elements={concatNodesAndEdges(elements)}
+          elements={CytoscapeComponent.normalizeElements({
+            nodes: frames[selectedFrameIndex].elements.nodes,
+            edges: frames[selectedFrameIndex].elements.edges
+          })}
           style={{
             backgroundColor: 'white',
             border: '2px solid black',
@@ -120,11 +125,11 @@ function App() {
 
         <div style={{ "width": "60%" }}>
           <UserMenu
-            elements={elements}
-            setElements={setElements}
-            setTappedEdgeId={setTappedEdgeId}
-            tappedEdgeId={tappedEdgeId}
-            tappedNodeId={tappedNodeId}
+            frames={frames}
+            getPNG={getPNG}
+            setFrames={setFrames}
+            selectedFrameIndex={selectedFrameIndex}
+            setSelectedFrameIndex={setSelectedFrameIndex}
           />
         </div>
       </div>

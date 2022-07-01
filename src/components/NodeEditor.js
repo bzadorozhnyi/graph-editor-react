@@ -5,10 +5,10 @@ import customDeepCopy from "../customDeepCopy";
 import { BLACK, GRAY, DEFAULT_NODE } from '../constants';
 
 function NodeEditor(props) {
-    let { elements, tappedNodeId, setElements } = props;
-
-    const tappedNode = tappedNodeId !== ''
-        ? elements.nodes.find(node => node.data.id === tappedNodeId).data
+    let { frames, setFrames, selectedFrameIndex } = props;
+    
+    const tappedNode = frames[selectedFrameIndex].elements.tappedNodeId !== ''
+        ? frames[selectedFrameIndex].elements.nodes.find(node => node.data.id === frames[selectedFrameIndex].elements.tappedNodeId).data
         : customDeepCopy(DEFAULT_NODE.data);
 
     return (
@@ -17,8 +17,9 @@ function NodeEditor(props) {
                 <h1>{tappedNode.label}</h1>
                 <div style={{ position: 'absolute', top: '85px', zIndex: '100' }}>
                     <CopyStyleButton
-                        elements={elements}
-                        setElements={setElements}
+                        frames={frames}
+                        setFrames={setFrames}
+                        selectedFrameIndex={selectedFrameIndex}
                         type='node'
                     />
                 </div>
@@ -32,7 +33,7 @@ function NodeEditor(props) {
                         defaultValue={GRAY}
                         hideTextfield
                         onChange={(value) => {
-                            if (tappedNodeId !== '') {
+                            if (frames[selectedFrameIndex].elements.tappedNodeId !== '') {
                                 let newColor = value.css.backgroundColor.substring(0, 7);
                                 let newOpacity = value.alpha;
 
@@ -43,7 +44,7 @@ function NodeEditor(props) {
 
                                 // need to set current color with opacity in ColorPicker
                                 tappedNode.nodeColorPicker = value;
-                                setElements(customDeepCopy(elements));
+                                setFrames(customDeepCopy(frames));
                             }
                         }}
                         value={tappedNode.nodeColorPicker}
@@ -54,9 +55,9 @@ function NodeEditor(props) {
                             max={100}
                             min={50}
                             onChange={(_, value) => {
-                                if (tappedNodeId !== '') {
+                                if (frames[selectedFrameIndex].elements.tappedNodeId !== '') {
                                     tappedNode.nodeSize = value;
-                                    setElements(customDeepCopy(elements));
+                                    setFrames(customDeepCopy(frames));
                                 }
                             }}
                             step={10}
@@ -76,12 +77,12 @@ function NodeEditor(props) {
                         disableAlpha
                         hideTextfield
                         onChange={(value) => {
-                            if (tappedNodeId !== '') {
+                            if (frames[selectedFrameIndex].elements.tappedNodeId !== '') {
                                 let newColor = value.css.backgroundColor;
                                 tappedNode.labelColor = (value.hasOwnProperty('error') ? 'black' : newColor);
                                 //need to set text color in ColorPicker
                                 tappedNode.labelColorPicker = value;
-                                setElements(customDeepCopy(elements));
+                                setFrames(customDeepCopy(frames));
                             }
                         }}
                         value={tappedNode.labelColorPicker}
@@ -92,9 +93,9 @@ function NodeEditor(props) {
                             min={15}
                             onChange={(event) => {
                                 let newLabelSize = Number(event.target.value);
-                                if (tappedNodeId !== '') {
+                                if (frames[selectedFrameIndex].elements.tappedNodeId !== '') {
                                     tappedNode.labelSize = newLabelSize;
-                                    setElements(customDeepCopy(elements));
+                                    setFrames(customDeepCopy(frames));
                                 }
                             }}
                             step={5}
@@ -114,12 +115,12 @@ function NodeEditor(props) {
                         disableAlpha
                         hideTextfield
                         onChange={(value) => {
-                            if (tappedNodeId !== '') {
+                            if (frames[selectedFrameIndex].elements.tappedNodeId !== '') {
                                 let newColor = value.css.backgroundColor;
                                 tappedNode.borderColor = (value.hasOwnProperty('error') ? 'black' : newColor);
                                 //need to set border color in ColorPicker
                                 tappedNode.borderColorPicker = value;
-                                setElements(customDeepCopy(elements));
+                                setFrames(customDeepCopy(frames));
                             }
                         }}
                         value={tappedNode.borderColorPicker}
@@ -130,9 +131,9 @@ function NodeEditor(props) {
                             max={10}
                             min={0}
                             onChange={(_, value) => {
-                                if (tappedNodeId !== '') {
+                                if (frames[selectedFrameIndex].elements.tappedNodeId !== '') {
                                     tappedNode.borderWidth = value;
-                                    setElements(customDeepCopy(elements));
+                                    setFrames(customDeepCopy(frames));
                                 }
                             }}
                             step={1}

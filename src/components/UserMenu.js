@@ -3,10 +3,11 @@ import { Box, Tab, Tabs } from "@mui/material";
 import EdgeEditor from './EdgeEditor';
 import EdgesEditor from './EdgesEditor';
 import NodeEditor from './NodeEditor';
+import Animation from "./Animation";
 
 export default function UserMenu(props) {
     const [value, setValue] = useState(0);
-    const handleChange = (event, value) => {
+    const handleChange = (_, value) => {
         setValue(value);
     };
     return (
@@ -16,27 +17,37 @@ export default function UserMenu(props) {
                     <Tab label='Edges editor' />
                     <Tab label='Node styling' />
                     <Tab label='Edge styling' />
+                    <Tab label='Animation' />
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
                 <EdgesEditor
-                    elements={props.elements}
-                    setElements={props.setElements}
-                    setTappedEdgeId={props.setTappedEdgeId}
+                    frames={props.frames}
+                    setFrames={props.setFrames}
+                    selectedFrameIndex={props.selectedFrameIndex}
                 />
             </TabPanel>
             <TabPanel value={value} index={1}>
                 <NodeEditor
-                    elements={props.elements}
-                    tappedNodeId={props.tappedNodeId}
-                    setElements={props.setElements}
+                    frames={props.frames}
+                    setFrames={props.setFrames}
+                    selectedFrameIndex={props.selectedFrameIndex}
                 />
             </TabPanel>
             <TabPanel value={value} index={2}>
                 <EdgeEditor
-                    elements={props.elements}
-                    setElements={props.setElements}
-                    tappedEdgeId={props.tappedEdgeId}
+                    frames={props.frames}
+                    setFrames={props.setFrames}
+                    selectedFrameIndex={props.selectedFrameIndex}
+                />
+            </TabPanel>
+            <TabPanel value={value} index={3}>
+                <Animation
+                    frames={props.frames}
+                    getPNG={props.getPNG}
+                    setFrames={props.setFrames}
+                    selectedFrameIndex={props.selectedFrameIndex}
+                    setSelectedFrameIndex={props.setSelectedFrameIndex}
                 />
             </TabPanel>
         </div>

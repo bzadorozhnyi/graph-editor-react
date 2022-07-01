@@ -1,0 +1,76 @@
+.panel {
+    background-color: rgba(25, 118, 210, 0.38);
+    border-radius: 6px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    height: 100%;
+    margin: 10px;
+    overflow-y: scroll;
+    padding: 5px 10px 5px;
+}
+
+/* scrollbar */
+
+.panel::-webkit-scrollbar {
+    width: 10px;
+}
+
+.panel::-webkit-scrollbar-thumb {
+    background: #1976d2;
+    border-radius: 6px;
+}
+
+/* scroolbar */
+
+.frame {
+    border-radius: 6px;
+    box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+    margin-bottom: 10px;
+}
+
+.frame-delete-button {
+    position: inherit;
+    top: 10px;
+    right: 10px;
+}
+
+.radio-div {
+    background-color: #50C878;
+    /* border: 1px solid black; */
+    margin-top: 10px;
+    cursor: default !important;
+}
+
+.radio-div.active {
+    background-color: #f9a825;
+}
+
+.frames-list {
+    display: grid;
+}
+
+#sticky-menu {
+    background-color: rgb(229, 244, 248);
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    height: 60px;
+    position: sticky;
+    top: 5px;
+    margin-bottom: 10px;
+}
+
+.buttons-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin: 20px 10px 20px 10px;
+    width: 480px;
+}
+
+.current-frame {
+    color:black;
+    display: flex;
+    align-items: center;
+    font-size: xx-large;
+    font-weight: 800;
+    height: 600px;
+}

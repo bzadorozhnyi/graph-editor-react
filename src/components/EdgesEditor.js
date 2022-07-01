@@ -8,12 +8,8 @@ import { DEFAULT_NODE_STYLE, DEFAULT_EDGE_STYLE } from "../constants";
 import TextEdgeInputs from "./TextEdgeInputs";
 
 class EdgesEditor extends Component {
-    state = {
-        edgeInputs: [],
-    };
-
     addEdge = () => {
-        let edgeInputs = this.state.edgeInputs;
+        let edgeInputs = this.props.frames[this.props.selectedFrameIndex].edgeInputs;
         edgeInputs.push({
             directed: false,
             edgeInputId: uuidv4(),
@@ -22,13 +18,10 @@ class EdgesEditor extends Component {
             target: "",
             label: ""
         });
-        this.setState({ ...edgeInputs });
+        this.props.setFrames(customDeepCopy(this.props.frames));
     };
 
     handleTextAdding = (textEdges, setTextEdges) => {
-        let {elements, setElements} = this.props;
-        let edgeInputs = this.state.edgeInputs;
-
         textEdges.split('\n').forEach(row => {
             let [source, target, ...label] = row.trim().split(/\s+/);
 
@@ -51,7 +44,7 @@ class EdgesEditor extends Component {
                 this.addNode(target);
 
                 if(target !== '') {
-                    elements.edges.push({
+                    this.props.frames[this.props.selectedFrameIndex].elements.edges.push({
                         data: {
                             arrow: "none",
                             id: newEdgeInput.id,
@@ -63,36 +56,31 @@ class EdgesEditor extends Component {
                     });
                 }
 
-                edgeInputs.push(newEdgeInput);
+                this.props.frames[this.props.selectedFrameIndex].edgeInputs.push(newEdgeInput);
             }
         });
 
-        setElements(customDeepCopy(elements));
-        this.setState({ ...edgeInputs });
+        this.props.setFrames(customDeepCopy(this.props.frames));
         setTextEdges('');
     }
 
     handleEdgeDelete = (deletedEdgeId) => {
-        let { elements } = this.props;
-        elements = customDeepCopy(elements);
-
         // remove old data from elements
         this.removeOldData(
-            this.state.edgeInputs.find((edge) => edge.id === deletedEdgeId),
-            elements
+            this.props.frames[this.props.selectedFrameIndex].edgeInputs.find((edge) => edge.id === deletedEdgeId),
+            this.props.frames[this.props.selectedFrameIndex].elements
         );
 
         // remove edge input
-        const edgeInputs = this.state.edgeInputs.filter(
+        this.props.frames[this.props.selectedFrameIndex].edgeInputs = this.props.frames[this.props.selectedFrameIndex].edgeInputs.filter(
             (edge) => edge.id !== deletedEdgeId
         );
 
-        this.setState({ edgeInputs });
-        this.props.setElements({ ...elements });
+        this.props.setFrames(customDeepCopy(this.props.frames));
     };
 
     addNode = (name) => {
-        const { elements } = this.props;
+        const { elements } = this.props.frames[this.props.selectedFrameIndex];
         // if node not exist => set number of it to 0
         if (!(name in elements.numberOfNodes)) {
             elements.numberOfNodes[name] = 0;
@@ -104,18 +92,22 @@ class EdgesEditor extends Component {
                     id: name,
                     label: name,
                     ...customDeepCopy(DEFAULT_NODE_STYLE)
+                },
+                position: {
+                    x: 0,
+                    y: 0
                 }
             });
         }
     }
 
     handleEdgeChange = (changedEdgeId, property, newValue) => {
-        let changedEdge = this.state.edgeInputs.find(
+        let changedEdge = this.props.frames[this.props.selectedFrameIndex].edgeInputs.find(
             (edge) => edge.id === changedEdgeId
         );
         let { id, source, target, label } = changedEdge;
 
-        let { elements } = this.props;
+        let { elements } = this.props.frames[this.props.selectedFrameIndex];
 
         // update inputs
         let oldValue = changedEdge[property];
@@ -192,13 +184,15 @@ class EdgesEditor extends Component {
                         });
 
                         // if current edge is tapped => set new id of tapped edge
-                        if (id === this.props.tappedEdgeId) {
-                            this.props.setTappedEdgeId(changedEdge.id);
+                        if (id === elements.tappedEdgeId) {
+                            this.props.frames[this.props.selectedFrameIndex].elements.tappedEdgeId = changedEdge.id;
+                            this.props.setFrames(customDeepCopy(this.props.frames));
                         }
                     }
                     // if cannot add edge and current edge is tapped => update tappedEdgeId
-                    else if (id === this.props.tappedEdgeId) {
-                        this.props.setTappedEdgeId('');
+                    else if (id === elements.tappedEdgeId) {
+                        this.props.frames[this.props.selectedFrameIndex].elements.tappedEdgeId = '';
+                        this.props.setFrames(customDeepCopy(this.props.frames));
                     }
                 }
                 break;
@@ -256,13 +250,15 @@ class EdgesEditor extends Component {
                         });
 
                         // if current edge is tapped => set new id of tapped edge
-                        if (id === this.props.tappedEdgeId) {
-                            this.props.setTappedEdgeId(changedEdge.id);
+                        if (id === elements.tappedEdgeId) {
+                            this.props.frames[this.props.selectedFrameIndex].elements.tappedEdgeId = changedEdge.id;
+                            this.props.setFrames(customDeepCopy(this.props.frames));
                         }
                     }
                     // if cannot add edge and current edge is tapped => update tappedEdgeId
-                    else if (id === this.props.tappedEdgeId) {
-                        this.props.setTappedEdgeId('');
+                    else if (id === elements.tappedEdgeId) {
+                        this.props.frames[this.props.selectedFrameIndex].elements.tappedEdgeId = '';
+                        this.props.setFrames(customDeepCopy(this.props.frames));
                     }
                 }
                 break;
@@ -270,8 +266,7 @@ class EdgesEditor extends Component {
                 break;
         }
 
-        this.setState({ ...this.state.edgeInputs });
-        this.props.setElements(customDeepCopy(elements));
+        this.props.setFrames(customDeepCopy(this.props.frames));
     };
 
     removeOldData = (removedEdge, elements) => {
@@ -283,19 +278,27 @@ class EdgesEditor extends Component {
             elements.nodes = elements.nodes.filter(
                 (node) => node.data.id !== source
             );
+            // if removed node is tapped => set tappedNodeId as empty
+            if (source === elements.tappedNodeId) {
+                elements.tappedNodeId = '';
+            }
         }
         if (target !== "" && --elements.numberOfNodes[target] === 0) {
             delete elements.numberOfNodes[target];
             elements.nodes = elements.nodes.filter(
                 (node) => node.data.id !== target
             );
+            // if removed node is tapped => set tappedNodeId as empty
+            if (target === elements.tappedNodeId) {
+                elements.tappedNodeId = '';
+            }
         }
 
         // remove edge
         if (source !== "" && target !== "") {
             // if removed edge is tapped => set tappedEdgeId as empty
-            if (id === this.props.tappedEdgeId) {
-                this.props.setTappedEdgeId('');
+            if (id === elements.tappedEdgeId) {
+                elements.tappedEdgeId = '';
             }
             elements.edges = elements.edges.filter(
                 (edge) => edge.data.id !== id
@@ -308,11 +311,14 @@ class EdgesEditor extends Component {
             return;
         }
 
-        const items = Array.from(this.state.edgeInputs);
+        const items = Array.from(this.props.frames[this.props.selectedFrameIndex].edgeInputs);
         const [reorderedEdgeInputs] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedEdgeInputs);
 
-        this.setState({ edgeInputs: items });
+        this.props.setSelectedFrame({
+            elements: this.props.frames[this.props.selectedFrameIndex].elements,
+            edgeInputs: items
+        });
     };
 
     render() {
@@ -329,7 +335,7 @@ class EdgesEditor extends Component {
                     <Droppable droppableId="edges-list">
                         {(provided) => (
                             <div className='edges-list' {...provided.droppableProps} ref={provided.innerRef}>
-                                {this.state.edgeInputs.map((edgeInput, index) => {
+                                {this.props.frames[this.props.selectedFrameIndex].edgeInputs.map((edgeInput, index) => {
                                     return (
                                         <Draggable key={edgeInput.edgeInputId + '-id'} draggableId={edgeInput.edgeInputId + '-id'} index={index}>
                                             {(provided) => (

@@ -4,20 +4,20 @@ import IconButton from '@mui/material/IconButton';
 import customDeepCopy from '../customDeepCopy';
 
 function CopyStyleButton(props) {
-    let { elements, setElements, type } = props;
+    let { frames, setFrames, selectedFrameIndex, type } = props;
 
     return (
         <IconButton
             onClick={() => {
-                elements.isActiveCopy[type] = !elements.isActiveCopy[type];
-                setElements(customDeepCopy(elements));
+                frames[selectedFrameIndex].elements.isActiveCopy[type] = !frames[selectedFrameIndex].elements.isActiveCopy[type];
+                setFrames(customDeepCopy(frames));
             }}
             size='large'
         >
             {
-                elements.isActiveCopy[type]
+                frames[selectedFrameIndex].elements.isActiveCopy[type]
                     ? <CancelIcon fontSize="inherit" />
-                    : <ColorizeIcon labelSize="inherit" />
+                    : <ColorizeIcon fontSize="inherit" />
             }
         </IconButton>
     );

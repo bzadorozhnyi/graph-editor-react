@@ -5,10 +5,10 @@ import customDeepCopy from '../customDeepCopy';
 import { BLACK, DEFAULT_EDGE, GRAY } from '../constants';
 
 function EdgeEditor(props) {
-    let { elements, setElements, tappedEdgeId } = props;
+    let { frames, setFrames, selectedFrameIndex } = props;
 
-    const tappedEdge = tappedEdgeId !== ''
-        ? elements.edges.find(edge => edge.data.id === tappedEdgeId).data
+    const tappedEdge = frames[selectedFrameIndex].elements.tappedEdgeId !== ''
+        ? frames[selectedFrameIndex].elements.edges.find(edge => edge.data.id === frames[selectedFrameIndex].elements.tappedEdgeId).data
         : customDeepCopy(DEFAULT_EDGE.data);
 
     return (
@@ -17,9 +17,9 @@ function EdgeEditor(props) {
                 <h1>{tappedEdge.id}</h1>
                 <div style={{ position: 'absolute', top: '95px', zIndex: '100' }}>
                     <CopyStyleButton
-                        elements={elements}
-                        isActiveCopy={elements.isEdgeStyleCopyActive}
-                        setElements={setElements}
+                        frames={frames}
+                        setFrames={setFrames}
+                        selectedFrameIndex={selectedFrameIndex}
                         type='edge'
                     />
                 </div>
@@ -33,7 +33,7 @@ function EdgeEditor(props) {
                         defaultValue={GRAY}
                         hideTextfield
                         onChange={(value) => {
-                            if (tappedEdgeId !== '') {
+                            if (frames[selectedFrameIndex].elements.tappedEdgeId !== '') {
                                 let newColor = value.css.backgroundColor.substring(0, 7);
                                 let newOpacity = value.alpha;
 
@@ -44,7 +44,7 @@ function EdgeEditor(props) {
 
                                 // need to set current color with opacity in ColorPicker
                                 tappedEdge.edgeColorPicker = value;
-                                setElements(customDeepCopy(elements));
+                                setFrames(customDeepCopy(frames));
                             }
                         }}
                         value={tappedEdge.edgeColorPicker}
@@ -55,9 +55,9 @@ function EdgeEditor(props) {
                             max={10}
                             min={1}
                             onChange={(_, value) => {
-                                if (tappedEdgeId !== '') {
+                                if (frames[selectedFrameIndex].elements.tappedEdgeId !== '') {
                                     tappedEdge.edgeWidth = value;
-                                    setElements(customDeepCopy(elements));
+                                    setFrames(customDeepCopy(frames));
                                 }
                             }}
                             step={1}
@@ -70,9 +70,9 @@ function EdgeEditor(props) {
                         defaultValue={'solid'}
                         exclusive
                         onChange={(_, value) => {
-                            if (tappedEdgeId !== '') {
+                            if (frames[selectedFrameIndex].elements.tappedEdgeId !== '') {
                                 tappedEdge.edgeLineStyle = value;
-                                setElements(customDeepCopy(elements));
+                                setFrames(customDeepCopy(frames));
                             }
                         }}
                         value={tappedEdge.edgeLineStyle}
@@ -93,12 +93,12 @@ function EdgeEditor(props) {
                         disableAlpha
                         hideTextfield
                         onChange={(value) => {
-                            if (tappedEdgeId !== '') {
+                            if (frames[selectedFrameIndex].elements.tappedEdgeId !== '') {
                                 let newColor = value.css.backgroundColor;
                                 tappedEdge.labelColor = (value.hasOwnProperty('error') ? 'black' : newColor);
                                 //need to set text color in ColorPicker
                                 tappedEdge.labelColorPicker = value;
-                                setElements(customDeepCopy(elements));
+                                setFrames(customDeepCopy(frames));
                             }
                         }}
                         value={tappedEdge.labelColorPicker}
@@ -108,9 +108,9 @@ function EdgeEditor(props) {
                             max={30}
                             min={10}
                             onChange={(_, value) => {
-                                if (tappedEdgeId !== '') {
+                                if (frames[selectedFrameIndex].elements.tappedEdgeId !== '') {
                                     tappedEdge.labelSize = value;
-                                    setElements(customDeepCopy(elements));
+                                    setFrames(customDeepCopy(frames));
                                 }
                             }}
                             step={5}
@@ -128,9 +128,9 @@ function EdgeEditor(props) {
                                 max={20}
                                 min={-20}
                                 onChange={(_, value) => {
-                                    if (tappedEdgeId !== '') {
+                                    if (frames[selectedFrameIndex].elements.tappedEdgeId !== '') {
                                         tappedEdge.labelMarginX = value;
-                                        setElements(customDeepCopy(elements));
+                                        setFrames(customDeepCopy(frames));
                                     }
                                 }}
                                 step={1}
@@ -146,9 +146,9 @@ function EdgeEditor(props) {
                                 max={20}
                                 min={-20}
                                 onChange={(_, value) => {
-                                    if (tappedEdgeId !== '') {
+                                    if (frames[selectedFrameIndex].elements.tappedEdgeId !== '') {
                                         tappedEdge.labelMarginY = value;
-                                        setElements(customDeepCopy(elements));
+                                        setFrames(customDeepCopy(frames));
                                     }
                                 }}
                                 step={1}

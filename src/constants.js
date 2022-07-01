@@ -48,4 +48,19 @@ const DEFAULT_EDGE = {
     }
 }
 
-export { BLACK, GRAY, DEFAULT_NODE_STYLE, DEFAULT_NODE, DEFAULT_EDGE_STYLE, DEFAULT_EDGE };
+const EMPTY_FRAME = {
+    elements: {
+        numberOfNodes: {},
+        nodes: [],
+        edges: [],
+        isActiveCopy: {
+            edge: false,
+            node: false
+        },
+        tappedNodeId: '',
+        tappedEdgeId: ''
+    },
+    edgeInputs: []
+}
+
+export { BLACK, GRAY, DEFAULT_NODE_STYLE, DEFAULT_NODE, DEFAULT_EDGE_STYLE, DEFAULT_EDGE, EMPTY_FRAME };
