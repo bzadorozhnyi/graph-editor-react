@@ -1,0 +1,54 @@
+.menu-control {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 10px;
+}
+
+.slider-wrapper {
+    margin: 0px 10px 0px;
+    width: 200px;
+}
+
+/* style-editor */
+
+.style-editor {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 100%;
+    width: inherit;
+}
+
+.style-editor.panel .panel {
+    height: initial;
+}
+
+.style-editor.panel::-webkit-scrollbar {
+    width: 0px !important;
+}
+
+.style-editor.panel div h1 {
+    color: #0C151C;
+    text-align: center;
+}
+
+.style-editor h2 {
+    color: #0C151C;
+    padding: 0px 20px 0px;
+}
+
+/* style-editor */
+
+
+/* Fix ColorPicker inputs overflow */
+
+.ColorPicker-makeStyles-root-47 {
+    width: 95% !important;
+}
+
+.ColorPicker-makeStyles-root-56 {
+    width: 95% !important;
+}
+
+/* Fix ColorPicker inputs overflow */

@@ -111,21 +111,26 @@ function Animation(props) {
         <div className='panel'>
             <div id='sticky-menu'>
                 <div className='buttons-wrapper'>
-                    <Button
-                        color='success'
-                        onClick={addNewFrame}
-                        variant='outlined'>
-                        Add as new frame
-                    </Button>
-                    <Button
-                        color='secondary'
-                        onClick={generateGIF}
-                        variant='outlined'>
-                        Generate GIF
-                    </Button>
+                    <div style={{ display: 'flex' }}>
+                        <Button
+                            color='success'
+                            onClick={addNewFrame}
+                            style={{ margin: '10px' }}
+                            variant='outlined'>
+                            Add as new frame
+                        </Button>
+                        <Button
+                            color='secondary'
+                            onClick={generateGIF}
+                            style={{ margin: '10px' }}
+                            variant='outlined'>
+                            Generate GIF
+                        </Button>
+                    </div>
                     <Button
                         color='error'
                         onClick={deleteFrame}
+                        style={{ margin: '10px' }}
                         variant='outlined'>
                         Delete Frame
                     </Button>

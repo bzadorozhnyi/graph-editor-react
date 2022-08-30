@@ -3,6 +3,17 @@ import { createColor } from 'material-ui-color';
 const GRAY = createColor('#808080');
 const BLACK = createColor('black');
 
+const PALETTE = {
+    red: '#cc0000',
+    orange: '#e69138',
+    yellow: '#f1c232',
+    green: '#6aa84f',
+    blue: '#3d85c6',
+    black: 'black',
+    white: 'white',
+    gray: '#808080'
+};
+
 const DEFAULT_NODE_STYLE = {
     nodeColor: '#808080',
     nodeColorPicker: GRAY,
@@ -63,4 +74,4 @@ const EMPTY_FRAME = {
     edgeInputs: []
 }
 
-export { BLACK, GRAY, DEFAULT_NODE_STYLE, DEFAULT_NODE, DEFAULT_EDGE_STYLE, DEFAULT_EDGE, EMPTY_FRAME };
+export { BLACK, GRAY, DEFAULT_NODE_STYLE, DEFAULT_NODE, DEFAULT_EDGE_STYLE, DEFAULT_EDGE, EMPTY_FRAME, PALETTE };

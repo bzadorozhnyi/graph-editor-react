@@ -3,13 +3,6 @@ body {
   margin: 3px 20px 3px;
 }
 
-.download-buttons-wrapper {
-  display: flex;
-  justify-content: space-between;
-  margin: 20px 10px 20px 0px;
-  width: 320px;
-}
-
 .graph-wrapper {
   /* align-items: center; */
   display: flex;
@@ -38,14 +31,6 @@ body {
   padding: 5px;
   position: relative;
   width: inherit;
-}
-
-.edge-input {
-  background-color: white;
-  border-radius: 6px;
-  justify-content: space-around;
-  height: 75px;
-  margin: 7px -5px 7px;
 }
 
 .edges-list {
@@ -118,7 +103,7 @@ body {
 
 #addEdgePanel p {
   color: #1976d2;
-  font-family: "Roboto","Helvetica","Arial","sans-serif";
+  font-family: "Roboto", "Helvetica", "Arial", "sans-serif";
   font-size: 20px;
   font-weight: 700;
   padding: 5px;
@@ -136,21 +121,3 @@ body {
 }
 
 /* scroolbar */
-
-#addListBlock {
-  color: #1976d2;
-  font-family: "Roboto","Helvetica","Arial","sans-serif";
-  font-weight: 700;
-}
-
-#textEdgeInputs {
-  display: none;
-}
-
-#addListBlock:hover + #textEdgeInputs {
-  display: block;
-}
-
-#textEdgeInputs:hover {
-  display: block;
-}

@@ -315,17 +315,20 @@ class EdgesEditor extends Component {
         const [reorderedEdgeInputs] = items.splice(result.source.index, 1);
         items.splice(result.destination.index, 0, reorderedEdgeInputs);
 
-        this.props.setSelectedFrame({
-            elements: this.props.frames[this.props.selectedFrameIndex].elements,
-            edgeInputs: items
-        });
+        this.props.frames[this.props.selectedFrameIndex].edgeInputs = items;
+        this.props.setFrames(customDeepCopy(this.props.frames));
     };
 
     render() {
         return (
             <div className='edges-editor panel'>
                 <div id="addEdgePanel">
-                    <Button onClick={this.addEdge}>Add edge</Button>
+                    <Button
+                        onClick={this.addEdge}
+                        style={{margin: '10px'}}
+                        variant='outlined'>
+                        Add edge
+                    </Button>
                     <TextEdgeInputs onAdd={this.handleTextAdding}/>
                     <p>
                         You can drag and drop edge`s inputs.

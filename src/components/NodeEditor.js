@@ -1,8 +1,9 @@
+import '../styles/StyleEditor.css';
 import CopyStyleButton from './CopyStyleButton';
 import { ColorPicker } from 'material-ui-color';
 import { Slider } from '@mui/material';
 import customDeepCopy from "../customDeepCopy";
-import { BLACK, GRAY, DEFAULT_NODE } from '../constants';
+import { BLACK, GRAY, DEFAULT_NODE, PALETTE } from '../constants';
 
 function NodeEditor(props) {
     let { frames, setFrames, selectedFrameIndex } = props;
@@ -47,6 +48,7 @@ function NodeEditor(props) {
                                 setFrames(customDeepCopy(frames));
                             }
                         }}
+                        palette={PALETTE}
                         value={tappedNode.nodeColorPicker}
                     />
                     <div className='slider-wrapper'>
@@ -85,6 +87,7 @@ function NodeEditor(props) {
                                 setFrames(customDeepCopy(frames));
                             }
                         }}
+                        palette={PALETTE}
                         value={tappedNode.labelColorPicker}
                     />
                     <div className='slider-wrapper'>
@@ -123,6 +126,7 @@ function NodeEditor(props) {
                                 setFrames(customDeepCopy(frames));
                             }
                         }}
+                        palette={PALETTE}
                         value={tappedNode.borderColorPicker}
                     />
                     <div className='slider-wrapper'>

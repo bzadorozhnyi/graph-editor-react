@@ -73,7 +73,7 @@ function App() {
       let tappedEdgeIndex = frames[selectedFrameIndex].elements.edges.findIndex(edge => edge.data.id === frames[selectedFrameIndex].elements.tappedEdgeId);
       let tappedEdge = frames[selectedFrameIndex].elements.edges.find(edge => edge.data.id === frames[selectedFrameIndex].elements.tappedEdgeId).data;
       let newTappedEdge = frames[selectedFrameIndex].elements.edges.find(edge => edge.data.id === newTappedEdgeId).data;
-      
+
       frames[selectedFrameIndex].elements.edges[tappedEdgeIndex].data = {
         ...customDeepCopy(newTappedEdge),
         arrow: tappedEdge.arrow,
@@ -134,9 +134,31 @@ function App() {
         </div>
       </div>
 
-      <div className="download-buttons-wrapper">
-        <Button onClick={() => { saveAs(cyRef.current.png(), 'graph.png') }} variant='outlined' >Download PNG</Button>
-        <Button onClick={() => { saveAs(cyRef.current.jpg(), 'graph.jpg') }} variant='outlined' >Download JPG</Button>
+      <div style={{ display: 'flex', justifyContent: 'space-between', width: '40%' }}>
+        <div style={{ display: 'flex' }}>
+          <Button
+            onClick={() => { saveAs(cyRef.current.png(), 'graph.png') }}
+            style={{ margin: '20px 10px 20px 0px' }}
+            variant='outlined' >
+            Download PNG
+          </Button>
+          <Button
+            onClick={() => { saveAs(cyRef.current.jpg(), 'graph.jpg') }}
+            style={{ margin: '20px 10px 20px 0px' }}
+            variant='outlined' >
+            Download JPG
+          </Button>
+        </div>
+        <Button
+          color='error'
+          onClick={() => {
+            frames[selectedFrameIndex] = customDeepCopy(EMPTY_FRAME);
+            setFrames(customDeepCopy(frames));
+          }}
+          style={{ margin: '20px 0px' }}
+          variant='outlined' >
+          Clear frame
+        </Button>
       </div>
     </div>
   );

@@ -1,0 +1,23 @@
+.edge-input {
+    align-items: center;
+    background-color: white;
+    border-radius: 6px;
+    display: grid;
+    justify-items: center;
+    gap: 15px;
+    grid-template-columns: 2fr 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    margin: 7px -5px 7px;
+    padding: 10px;
+}
+
+#delete-button-wrapper {
+    display: flex;
+    justify-content: center;
+
+    grid-row-start: 1;
+    grid-column-start: 3;
+
+    grid-row-end: 3;
+    grid-column-end: 4;
+}

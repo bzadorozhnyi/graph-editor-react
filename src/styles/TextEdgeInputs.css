@@ -1,0 +1,47 @@
+#addListBlock {
+    border: 1px solid #1976d280;
+    border-radius: 4px;
+    color: #1976d2;
+    font-family: "Roboto", "Helvetica", "Arial", "sans-serif";
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.75;
+    padding: 5px 15px;
+}
+
+#textEdgeInputs {
+    display: none;
+}
+
+#textEdgeInputs div {
+    background-color: #E5F4F8;
+    /* border: 0.5px solid black; */
+    border: 1px solid #1976d280;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    position: absolute;
+    width: 300px;
+}
+
+#textEdgeInputs textarea {
+    border: 1px solid #0959a880;
+    border-radius: 6px;
+    height: 400px;
+    margin-bottom: 10px;
+    resize: none;
+}
+
+#textEdgeInputs textarea:focus {
+    border: 3px solid #0a6bcc80;
+    outline: none !important;
+}
+
+#addListBlock:hover+#textEdgeInputs {
+    display: block;
+}
+
+#textEdgeInputs:hover {
+    display: block;
+}

@@ -1,8 +1,9 @@
+import '../styles/StyleEditor.css';
 import CopyStyleButton from './CopyStyleButton';
 import { ColorPicker } from 'material-ui-color';
-import { Slider, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { FormControlLabel, Slider, Switch, ToggleButton, ToggleButtonGroup } from '@mui/material';
 import customDeepCopy from '../customDeepCopy';
-import { BLACK, DEFAULT_EDGE, GRAY } from '../constants';
+import { BLACK, DEFAULT_EDGE, GRAY, PALETTE } from '../constants';
 
 function EdgeEditor(props) {
     let { frames, setFrames, selectedFrameIndex } = props;
@@ -47,6 +48,7 @@ function EdgeEditor(props) {
                                 setFrames(customDeepCopy(frames));
                             }
                         }}
+                        palette={PALETTE}
                         value={tappedEdge.edgeColorPicker}
                     />
                     <div className='slider-wrapper'>
@@ -81,6 +83,23 @@ function EdgeEditor(props) {
                         <ToggleButton value='dotted'>Dotted</ToggleButton>
                         <ToggleButton value='dashed'>Dashed</ToggleButton>
                     </ToggleButtonGroup>
+                    <FormControlLabel
+                        control={
+                            <Switch
+                                checked={tappedEdge.arrow === 'triangle'}
+                                onChange={(_) => {
+                                    // change direction`s value to opposite because of bug in switch new value (not local problem)
+                                    tappedEdge.arrow = tappedEdge.arrow === 'none' ? 'triangle' : 'none';
+                                    frames[selectedFrameIndex].edgeInputs.find(input => input.id === tappedEdge.id).directed = tappedEdge.arrow === 'triangle';
+
+                                    setFrames(customDeepCopy(frames));
+                                }}
+                                size='small'
+                            />
+                        }
+                        label='Directed'
+                        labelPlacement='start'
+                />
                 </div>
             </div>
 
@@ -101,6 +120,7 @@ function EdgeEditor(props) {
                                 setFrames(customDeepCopy(frames));
                             }
                         }}
+                        palette={PALETTE}
                         value={tappedEdge.labelColorPicker}
                     />
                     <div className='slider-wrapper'>
